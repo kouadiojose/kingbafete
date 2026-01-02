@@ -651,6 +651,19 @@ img {
     color: var(--color-gray-400);
 }
 
+.about__photo {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform var(--transition-slow);
+}
+
+.about__image:hover .about__photo {
+    transform: scale(1.05);
+}
+
 .placeholder__icon {
     opacity: 0.5;
 }
