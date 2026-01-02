@@ -885,6 +885,19 @@ img {
     overflow: hidden;
 }
 
+.book-card__cover {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--transition-slow);
+}
+
+.book-card:hover .book-card__cover {
+    transform: scale(1.08);
+}
+
 .book-card__overlay {
     position: absolute;
     inset: 0;
