@@ -996,6 +996,12 @@ img {
     justify-content: center;
 }
 
+.video__iframe {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
 .play-button {
     width: 70px;
     height: 70px;
