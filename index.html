@@ -473,64 +473,290 @@
             <div class="container">
                 <div class="section__header" data-aos="fade-up">
                     <span class="section__subtitle">Souvenirs</span>
-                    <h2 class="section__title">Galerie</h2>
+                    <h2 class="section__title">Galerie Photos</h2>
                     <div class="section__line"></div>
+                    <p class="section__description">
+                        Revivez les moments forts : événements, rencontres littéraires,
+                        activités communautaires et bien plus encore.
+                    </p>
                 </div>
 
-                <div class="gallery__grid">
-                    <div class="gallery__item gallery__item--wide" data-aos="fade-up">
-                        <div class="gallery__placeholder">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                            </svg>
+                <!-- Gallery Filters -->
+                <div class="gallery__filters" data-aos="fade-up">
+                    <button class="gallery__filter active" data-filter="all">Tous</button>
+                    <button class="gallery__filter" data-filter="evenements">Événements</button>
+                    <button class="gallery__filter" data-filter="livres">Livres</button>
+                    <button class="gallery__filter" data-filter="communaute">Communauté</button>
+                    <button class="gallery__filter" data-filter="medias">Médias</button>
+                </div>
+
+                <!-- Gallery Grid -->
+                <div class="gallery__grid" id="gallery-grid">
+                    <div class="gallery__item gallery__item--wide" data-category="evenements" data-aos="fade-up">
+                        <div class="gallery__image" style="background: linear-gradient(135deg, #D4722C 0%, #D4AF37 50%, #B85D1F 100%);">
+                            <div class="gallery__image-content">
+                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </div>
                         </div>
+                        <div class="gallery__overlay">
+                            <span class="gallery__category-tag">Événement</span>
+                            <h4 class="gallery__caption">Soirée de lancement - Devoir de Mémoire</h4>
+                            <p class="gallery__date">Mars 2025</p>
+                        </div>
+                        <button class="gallery__zoom" aria-label="Agrandir">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                <line x1="11" y1="8" x2="11" y2="14"></line>
+                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                            </svg>
+                        </button>
                     </div>
-                    <div class="gallery__item" data-aos="fade-up" data-aos-delay="50">
-                        <div class="gallery__placeholder">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                            </svg>
+
+                    <div class="gallery__item" data-category="livres" data-aos="fade-up" data-aos-delay="50">
+                        <div class="gallery__image" style="background: linear-gradient(135deg, #2C3E50 0%, #34495E 50%, #1A252F 100%);">
+                            <div class="gallery__image-content">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                </svg>
+                            </div>
                         </div>
+                        <div class="gallery__overlay">
+                            <span class="gallery__category-tag">Livres</span>
+                            <h4 class="gallery__caption">Séance de dédicaces</h4>
+                            <p class="gallery__date">Décembre 2024</p>
+                        </div>
+                        <button class="gallery__zoom" aria-label="Agrandir">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                <line x1="11" y1="8" x2="11" y2="14"></line>
+                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                            </svg>
+                        </button>
                     </div>
-                    <div class="gallery__item" data-aos="fade-up" data-aos-delay="100">
-                        <div class="gallery__placeholder">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                            </svg>
+
+                    <div class="gallery__item" data-category="communaute" data-aos="fade-up" data-aos-delay="100">
+                        <div class="gallery__image" style="background: linear-gradient(135deg, #C0392B 0%, #E74C3C 50%, #922B21 100%);">
+                            <div class="gallery__image-content">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                            </div>
                         </div>
+                        <div class="gallery__overlay">
+                            <span class="gallery__category-tag">Communauté</span>
+                            <h4 class="gallery__caption">Gala SOFIFRAN 2024</h4>
+                            <p class="gallery__date">Novembre 2024</p>
+                        </div>
+                        <button class="gallery__zoom" aria-label="Agrandir">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                <line x1="11" y1="8" x2="11" y2="14"></line>
+                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                            </svg>
+                        </button>
                     </div>
-                    <div class="gallery__item" data-aos="fade-up" data-aos-delay="150">
-                        <div class="gallery__placeholder">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                            </svg>
+
+                    <div class="gallery__item" data-category="medias" data-aos="fade-up" data-aos-delay="150">
+                        <div class="gallery__image" style="background: linear-gradient(135deg, #8E44AD 0%, #9B59B6 50%, #6C3483 100%);">
+                            <div class="gallery__image-content">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+                                    <path d="M23 7l-7 5 7 5V7z"></path>
+                                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                                </svg>
+                            </div>
                         </div>
+                        <div class="gallery__overlay">
+                            <span class="gallery__category-tag">Médias</span>
+                            <h4 class="gallery__caption">Interview TV - Capital TV</h4>
+                            <p class="gallery__date">Octobre 2024</p>
+                        </div>
+                        <button class="gallery__zoom" aria-label="Agrandir">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                <line x1="11" y1="8" x2="11" y2="14"></line>
+                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                            </svg>
+                        </button>
                     </div>
-                    <div class="gallery__item gallery__item--tall" data-aos="fade-up" data-aos-delay="200">
-                        <div class="gallery__placeholder">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                            </svg>
+
+                    <div class="gallery__item gallery__item--tall" data-category="evenements" data-aos="fade-up" data-aos-delay="200">
+                        <div class="gallery__image" style="background: linear-gradient(180deg, #D4AF37 0%, #B8860B 50%, #8B6914 100%);">
+                            <div class="gallery__image-content">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                            </div>
                         </div>
+                        <div class="gallery__overlay">
+                            <span class="gallery__category-tag">Événement</span>
+                            <h4 class="gallery__caption">Réception Ordre de la Pléiade</h4>
+                            <p class="gallery__date">2019</p>
+                        </div>
+                        <button class="gallery__zoom" aria-label="Agrandir">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                <line x1="11" y1="8" x2="11" y2="14"></line>
+                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                            </svg>
+                        </button>
                     </div>
-                    <div class="gallery__item" data-aos="fade-up" data-aos-delay="250">
-                        <div class="gallery__placeholder">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                            </svg>
+
+                    <div class="gallery__item" data-category="communaute" data-aos="fade-up" data-aos-delay="250">
+                        <div class="gallery__image" style="background: linear-gradient(135deg, #27AE60 0%, #2ECC71 50%, #1E8449 100%);">
+                            <div class="gallery__image-content">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                            </div>
                         </div>
+                        <div class="gallery__overlay">
+                            <span class="gallery__category-tag">Communauté</span>
+                            <h4 class="gallery__caption">Atelier contes pour enfants</h4>
+                            <p class="gallery__date">Septembre 2024</p>
+                        </div>
+                        <button class="gallery__zoom" aria-label="Agrandir">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                <line x1="11" y1="8" x2="11" y2="14"></line>
+                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="gallery__item" data-category="livres" data-aos="fade-up" data-aos-delay="300">
+                        <div class="gallery__image" style="background: linear-gradient(135deg, #E67E22 0%, #F39C12 50%, #D35400 100%);">
+                            <div class="gallery__image-content">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+                                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="gallery__overlay">
+                            <span class="gallery__category-tag">Livres</span>
+                            <h4 class="gallery__caption">Salon du livre francophone</h4>
+                            <p class="gallery__date">Juin 2024</p>
+                        </div>
+                        <button class="gallery__zoom" aria-label="Agrandir">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                <line x1="11" y1="8" x2="11" y2="14"></line>
+                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="gallery__item gallery__item--wide" data-category="medias" data-aos="fade-up" data-aos-delay="350">
+                        <div class="gallery__image" style="background: linear-gradient(135deg, #2980B9 0%, #3498DB 50%, #1B4F72 100%);">
+                            <div class="gallery__image-content">
+                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+                                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="gallery__overlay">
+                            <span class="gallery__category-tag">Médias</span>
+                            <h4 class="gallery__caption">Entrevue Radio-Canada</h4>
+                            <p class="gallery__date">Mai 2024</p>
+                        </div>
+                        <button class="gallery__zoom" aria-label="Agrandir">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                <line x1="11" y1="8" x2="11" y2="14"></line>
+                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="gallery__item" data-category="evenements" data-aos="fade-up" data-aos-delay="400">
+                        <div class="gallery__image" style="background: linear-gradient(135deg, #1ABC9C 0%, #16A085 50%, #0E6655 100%);">
+                            <div class="gallery__image-content">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="gallery__overlay">
+                            <span class="gallery__category-tag">Événement</span>
+                            <h4 class="gallery__caption">Festival culturel africain</h4>
+                            <p class="gallery__date">Août 2023</p>
+                        </div>
+                        <button class="gallery__zoom" aria-label="Agrandir">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                <line x1="11" y1="8" x2="11" y2="14"></line>
+                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Gallery Counter -->
+                <div class="gallery__footer" data-aos="fade-up">
+                    <p class="gallery__count"><span id="gallery-count">9</span> photos dans la galerie</p>
+                    <a href="#contact" class="btn btn--outline">
+                        <span>Partagez vos photos</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Lightbox Modal -->
+            <div class="lightbox" id="lightbox">
+                <div class="lightbox__backdrop"></div>
+                <div class="lightbox__content">
+                    <button class="lightbox__close" aria-label="Fermer">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                    <button class="lightbox__nav lightbox__prev" aria-label="Précédent">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <button class="lightbox__nav lightbox__next" aria-label="Suivant">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                    <div class="lightbox__image-container">
+                        <div class="lightbox__image" id="lightbox-image"></div>
+                    </div>
+                    <div class="lightbox__info" id="lightbox-info">
+                        <span class="lightbox__tag"></span>
+                        <h3 class="lightbox__title"></h3>
+                        <p class="lightbox__date"></p>
+                    </div>
+                    <div class="lightbox__counter">
+                        <span id="lightbox-current">1</span> / <span id="lightbox-total">9</span>
                     </div>
                 </div>
             </div>
@@ -672,6 +898,7 @@
             <div class="footer__bottom">
                 <p class="footer__copyright">
                     &copy; 2026 King Bafété. Tous droits réservés.
+                    <a href="admin.html" class="footer__admin-link">Administration</a>
                 </p>
             </div>
         </div>
