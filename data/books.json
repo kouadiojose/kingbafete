@@ -1,0 +1,6 @@
+[
+    { "id": 1, "title": "Dias, Thérapeute et Homme léopard", "description": "Grand-père Dias était un homme ordinaire, humble et sans histoire seulement en apparence, car il en circulait beaucoup, derrière son dos.", "price": "12.00", "link": "#" },
+    { "id": 2, "title": "Nyota, le secret de la plume", "description": "Une histoire captivante qui révèle les secrets ancestraux transmis de génération en génération.", "price": "25.00", "link": "#" },
+    { "id": 3, "title": "Le Soleil, la Lune et les Étoiles", "description": "Les contes de maman Fété : Le Soleil, la Lune et les Étoiles, le Coq, la Poule et les Poussins.", "price": "15.00", "link": "#" },
+    { "id": 4, "title": "Mois d'Espoir - Mélanges pour l'Afrique", "description": "Une compilation unique célébrant la richesse culturelle et l'espoir du continent africain.", "price": "15.00", "link": "#" }
+]

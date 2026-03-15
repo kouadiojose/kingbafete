@@ -1,0 +1,11 @@
+[
+    { "id": 1, "caption": "Soirée de lancement - Devoir de Mémoire", "category": "evenements", "date": "Mars 2025", "color1": "#D4722C", "color2": "#D4AF37", "size": "wide" },
+    { "id": 2, "caption": "Séance de dédicaces", "category": "livres", "date": "Décembre 2024", "color1": "#2C3E50", "color2": "#1A252F", "size": "normal" },
+    { "id": 3, "caption": "Gala SOFIFRAN 2024", "category": "communaute", "date": "Novembre 2024", "color1": "#C0392B", "color2": "#922B21", "size": "normal" },
+    { "id": 4, "caption": "Interview TV - Capital TV", "category": "medias", "date": "Octobre 2024", "color1": "#8E44AD", "color2": "#6C3483", "size": "normal" },
+    { "id": 5, "caption": "Réception Ordre de la Pléiade", "category": "evenements", "date": "2019", "color1": "#D4AF37", "color2": "#8B6914", "size": "tall" },
+    { "id": 6, "caption": "Atelier contes pour enfants", "category": "communaute", "date": "Septembre 2024", "color1": "#27AE60", "color2": "#1E8449", "size": "normal" },
+    { "id": 7, "caption": "Salon du livre francophone", "category": "livres", "date": "Juin 2024", "color1": "#E67E22", "color2": "#D35400", "size": "normal" },
+    { "id": 8, "caption": "Entrevue Radio-Canada", "category": "medias", "date": "Mai 2024", "color1": "#2980B9", "color2": "#1B4F72", "size": "wide" },
+    { "id": 9, "caption": "Festival culturel africain", "category": "evenements", "date": "Août 2023", "color1": "#1ABC9C", "color2": "#0E6655", "size": "normal" }
+]

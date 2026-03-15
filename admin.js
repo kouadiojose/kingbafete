@@ -1,68 +1,48 @@
 /**
  * King Bafété - Admin Panel JavaScript
- * localStorage-based content management system
+ * JSON file-based content management via API
  */
 
 (function () {
     'use strict';
 
-    // =========================================
-    // Default Data
-    // =========================================
-    const DEFAULT_CREDENTIALS = { username: 'admin', password: 'kingbafete2026' };
+    var API_BASE = '/api/data';
 
-    const DEFAULT_GALLERY = [
-        { id: 1, caption: 'Soirée de lancement - Devoir de Mémoire', category: 'evenements', date: 'Mars 2025', color1: '#D4722C', color2: '#D4AF37', size: 'wide' },
-        { id: 2, caption: 'Séance de dédicaces', category: 'livres', date: 'Décembre 2024', color1: '#2C3E50', color2: '#1A252F', size: 'normal' },
-        { id: 3, caption: 'Gala SOFIFRAN 2024', category: 'communaute', date: 'Novembre 2024', color1: '#C0392B', color2: '#922B21', size: 'normal' },
-        { id: 4, caption: 'Interview TV - Capital TV', category: 'medias', date: 'Octobre 2024', color1: '#8E44AD', color2: '#6C3483', size: 'normal' },
-        { id: 5, caption: 'Réception Ordre de la Pléiade', category: 'evenements', date: '2019', color1: '#D4AF37', color2: '#8B6914', size: 'tall' },
-        { id: 6, caption: 'Atelier contes pour enfants', category: 'communaute', date: 'Septembre 2024', color1: '#27AE60', color2: '#1E8449', size: 'normal' },
-        { id: 7, caption: 'Salon du livre francophone', category: 'livres', date: 'Juin 2024', color1: '#E67E22', color2: '#D35400', size: 'normal' },
-        { id: 8, caption: 'Entrevue Radio-Canada', category: 'medias', date: 'Mai 2024', color1: '#2980B9', color2: '#1B4F72', size: 'wide' },
-        { id: 9, caption: 'Festival culturel africain', category: 'evenements', date: 'Août 2023', color1: '#1ABC9C', color2: '#0E6655', size: 'normal' }
-    ];
-
-    const DEFAULT_BOOKS = [
-        { id: 1, title: 'Dias, Thérapeute et Homme léopard', description: 'Grand-père Dias était un homme ordinaire, humble et sans histoire seulement en apparence.', price: '12.00', link: '#' },
-        { id: 2, title: 'Nyota, le secret de la plume', description: 'Une histoire captivante qui révèle les secrets ancestraux transmis de génération en génération.', price: '25.00', link: '#' },
-        { id: 3, title: 'Le Soleil, la Lune et les Étoiles', description: 'Les contes de maman Fété : Le Soleil, la Lune et les Étoiles, le Coq, la Poule et les Poussins.', price: '15.00', link: '#' },
-        { id: 4, title: 'Mois d\'Espoir - Mélanges pour l\'Afrique', description: 'Une compilation unique célébrant la richesse culturelle et l\'espoir du continent africain.', price: '15.00', link: '#' }
-    ];
-
-    const DEFAULT_BLOG = [
-        { id: 1, title: 'L\'importance de préserver nos traditions orales', category: 'Culture', excerpt: 'La transmission orale est le pilier de notre culture africaine. Découvrez pourquoi il est crucial de documenter ces trésors...', date: '2025-12-15' },
-        { id: 2, title: 'Rencontre littéraire à Toronto', category: 'Événement', excerpt: 'Rejoignez-nous pour une soirée de contes et de partage...', date: '2025-12-10' },
-        { id: 3, title: 'Mon parcours d\'écrivaine', category: 'Littérature', excerpt: 'De Kinshasa à Welland, comment l\'écriture m\'a permis de rester connectée...', date: '2025-12-05' }
-    ];
-
-    const DEFAULT_ABOUT = {
-        highlight: 'Madame Fété Ngira-Batware Kimpiobi a immigré au Canada en octobre 1999, en provenance de la R D Congo, son pays d\'origine.',
-        text1: 'Après un séjour de cinq ans et demi à Montréal, elle s\'est installée à Welland, en Ontario. Dans son Congo natal, elle s\'était imposée parmi les personnalités culturelles reconnues de Kinshasa, la capitale.',
-        text2: 'De nature hyperactive, elle a toujours mené de front plusieurs activités : directrice d\'une multinationale de négoce internationale, exploitante d\'une galerie d\'art, mécène et éditrice de trois magazines.',
-        text3: 'En 2007, elle a co-fondé l\'organisme SOFIFRAN (Solidarité des Femmes et Familles Interconnectées Francophones du Niagara) avec un groupe de femmes immigrantes francophones.',
-        stats: [
-            { value: 25, label: 'Années d\'expérience' },
-            { value: 4, label: 'Livres publiés' },
-            { value: 1000, label: 'Lecteurs touchés' }
-        ]
+    // Cache local des données chargées
+    var cache = {
+        gallery: [],
+        books: [],
+        blog: [],
+        about: {},
+        settings: {}
     };
 
     // =========================================
-    // Storage Helpers
+    // API Helpers
     // =========================================
-    function getData(key, defaultValue) {
-        const stored = localStorage.getItem('kb_' + key);
-        return stored ? JSON.parse(stored) : defaultValue;
+    function apiGet(resource) {
+        return fetch(API_BASE + '/' + resource)
+            .then(function (res) {
+                if (!res.ok) throw new Error('Erreur réseau');
+                return res.json();
+            });
     }
 
-    function setData(key, value) {
-        localStorage.setItem('kb_' + key, JSON.stringify(value));
+    function apiSave(resource, data) {
+        return fetch(API_BASE + '/' + resource, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(function (res) {
+            if (!res.ok) throw new Error('Erreur d\'enregistrement');
+            return res.json();
+        });
     }
 
     function getNextId(items) {
         if (!items.length) return 1;
-        return Math.max(...items.map(i => i.id)) + 1;
+        return Math.max.apply(null, items.map(function (i) { return i.id; })) + 1;
     }
 
     // =========================================
@@ -101,7 +81,7 @@
         var dashboard = document.getElementById('admin-dashboard');
         var logoutBtn = document.getElementById('logout-btn');
 
-        // Check if already logged in
+        // Check session
         if (sessionStorage.getItem('kb_auth') === 'true') {
             loginScreen.style.display = 'none';
             dashboard.style.display = 'flex';
@@ -114,16 +94,30 @@
             var username = document.getElementById('login-user').value;
             var password = document.getElementById('login-pass').value;
             var errorEl = document.getElementById('login-error');
-            var creds = getData('credentials', DEFAULT_CREDENTIALS);
 
-            if (username === creds.username && password === creds.password) {
-                sessionStorage.setItem('kb_auth', 'true');
-                loginScreen.style.display = 'none';
-                dashboard.style.display = 'flex';
-                initDashboard();
-            } else {
-                errorEl.textContent = 'Nom d\'utilisateur ou mot de passe incorrect.';
-            }
+            // Charger les credentials depuis le serveur
+            apiGet('settings').then(function (settings) {
+                var creds = settings.credentials || { username: 'admin', password: 'kingbafete2026' };
+
+                if (username === creds.username && password === creds.password) {
+                    sessionStorage.setItem('kb_auth', 'true');
+                    loginScreen.style.display = 'none';
+                    dashboard.style.display = 'flex';
+                    initDashboard();
+                } else {
+                    errorEl.textContent = 'Nom d\'utilisateur ou mot de passe incorrect.';
+                }
+            }).catch(function () {
+                // Fallback si API pas disponible
+                if (username === 'admin' && password === 'kingbafete2026') {
+                    sessionStorage.setItem('kb_auth', 'true');
+                    loginScreen.style.display = 'none';
+                    dashboard.style.display = 'flex';
+                    initDashboard();
+                } else {
+                    errorEl.textContent = 'Nom d\'utilisateur ou mot de passe incorrect.';
+                }
+            });
         });
 
         logoutBtn.addEventListener('click', function () {
@@ -164,13 +158,10 @@
                 if (targetPanel) targetPanel.classList.add('active');
 
                 if (pageTitle) pageTitle.textContent = titles[section] || section;
-
-                // Close mobile sidebar
                 if (sidebar) sidebar.classList.remove('open');
             });
         });
 
-        // Quick action buttons
         document.querySelectorAll('[data-goto]').forEach(function (btn) {
             btn.addEventListener('click', function () {
                 var section = this.dataset.goto;
@@ -179,7 +170,6 @@
             });
         });
 
-        // Mobile toggle
         if (toggleBtn && sidebar) {
             toggleBtn.addEventListener('click', function () {
                 sidebar.classList.toggle('open');
@@ -191,18 +181,26 @@
     // Gallery Management
     // =========================================
     function initGalleryAdmin() {
-        var gallery = getData('gallery', DEFAULT_GALLERY);
         var modal = document.getElementById('gallery-modal');
         var form = document.getElementById('gallery-form');
         var addBtn = document.getElementById('add-gallery-btn');
 
+        function loadAndRender() {
+            apiGet('gallery').then(function (data) {
+                cache.gallery = data;
+                renderGallery();
+            }).catch(function () {
+                showToast('Erreur de chargement de la galerie', 'error');
+            });
+        }
+
         function renderGallery() {
-            gallery = getData('gallery', DEFAULT_GALLERY);
             var list = document.getElementById('admin-gallery-list');
             if (!list) return;
 
-            list.innerHTML = gallery.map(function (item) {
-                var categoryLabels = { evenements: 'Événements', livres: 'Livres', communaute: 'Communauté', medias: 'Médias' };
+            var categoryLabels = { evenements: 'Événements', livres: 'Livres', communaute: 'Communauté', medias: 'Médias' };
+
+            list.innerHTML = cache.gallery.map(function (item) {
                 return '<div class="admin-gallery-card">' +
                     '<div class="admin-gallery-card__image" style="background: linear-gradient(135deg, ' + escapeHtml(item.color1) + ' 0%, ' + escapeHtml(item.color2) + ' 100%);">' +
                     '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>' +
@@ -216,12 +214,9 @@
                     '<div class="admin-gallery-card__actions">' +
                     '<button class="btn-admin btn-admin--edit" data-edit="' + item.id + '">Modifier</button>' +
                     '<button class="btn-admin btn-admin--danger" data-delete="' + item.id + '">Supprimer</button>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>';
+                    '</div></div></div>';
             }).join('');
 
-            // Edit/Delete handlers
             list.querySelectorAll('[data-edit]').forEach(function (btn) {
                 btn.addEventListener('click', function () { editGalleryItem(parseInt(this.dataset.edit)); });
             });
@@ -245,16 +240,19 @@
         }
 
         function editGalleryItem(id) {
-            var item = gallery.find(function (g) { return g.id === id; });
+            var item = cache.gallery.find(function (g) { return g.id === id; });
             if (item) openModal(item);
         }
 
         function deleteGalleryItem(id) {
             if (!confirm('Supprimer cette photo de la galerie ?')) return;
-            gallery = gallery.filter(function (g) { return g.id !== id; });
-            setData('gallery', gallery);
-            renderGallery();
-            showToast('Photo supprimée avec succès');
+            cache.gallery = cache.gallery.filter(function (g) { return g.id !== id; });
+            apiSave('gallery', cache.gallery).then(function () {
+                renderGallery();
+                showToast('Photo supprimée avec succès');
+            }).catch(function () {
+                showToast('Erreur lors de la suppression', 'error');
+            });
         }
 
         addBtn.addEventListener('click', function () { openModal(null); });
@@ -272,41 +270,50 @@
             };
 
             if (editId) {
-                var idx = gallery.findIndex(function (g) { return g.id === parseInt(editId); });
+                var idx = cache.gallery.findIndex(function (g) { return g.id === parseInt(editId); });
                 if (idx !== -1) {
-                    gallery[idx] = Object.assign({}, gallery[idx], itemData);
+                    cache.gallery[idx] = Object.assign({}, cache.gallery[idx], itemData);
                 }
             } else {
-                itemData.id = getNextId(gallery);
-                gallery.push(itemData);
+                itemData.id = getNextId(cache.gallery);
+                cache.gallery.push(itemData);
             }
 
-            setData('gallery', gallery);
-            modal.classList.remove('active');
-            renderGallery();
-            showToast(editId ? 'Photo modifiée avec succès' : 'Photo ajoutée avec succès');
+            apiSave('gallery', cache.gallery).then(function () {
+                modal.classList.remove('active');
+                renderGallery();
+                showToast(editId ? 'Photo modifiée avec succès' : 'Photo ajoutée avec succès');
+            }).catch(function () {
+                showToast('Erreur lors de l\'enregistrement', 'error');
+            });
         });
 
-        // Modal close handlers
         setupModalClose(modal);
-        renderGallery();
+        loadAndRender();
     }
 
     // =========================================
     // Books Management
     // =========================================
     function initBooksAdmin() {
-        var books = getData('books', DEFAULT_BOOKS);
         var modal = document.getElementById('book-modal');
         var form = document.getElementById('book-form');
         var addBtn = document.getElementById('add-book-btn');
 
+        function loadAndRender() {
+            apiGet('books').then(function (data) {
+                cache.books = data;
+                renderBooks();
+            }).catch(function () {
+                showToast('Erreur de chargement des livres', 'error');
+            });
+        }
+
         function renderBooks() {
-            books = getData('books', DEFAULT_BOOKS);
             var list = document.getElementById('admin-books-list');
             if (!list) return;
 
-            list.innerHTML = books.map(function (book) {
+            list.innerHTML = cache.books.map(function (book) {
                 return '<tr>' +
                     '<td><strong>' + escapeHtml(book.title) + '</strong></td>' +
                     '<td>' + escapeHtml(book.description.substring(0, 60)) + '...</td>' +
@@ -338,16 +345,19 @@
         }
 
         function editBook(id) {
-            var book = books.find(function (b) { return b.id === id; });
+            var book = cache.books.find(function (b) { return b.id === id; });
             if (book) openModal(book);
         }
 
         function deleteBook(id) {
             if (!confirm('Supprimer ce livre ?')) return;
-            books = books.filter(function (b) { return b.id !== id; });
-            setData('books', books);
-            renderBooks();
-            showToast('Livre supprimé avec succès');
+            cache.books = cache.books.filter(function (b) { return b.id !== id; });
+            apiSave('books', cache.books).then(function () {
+                renderBooks();
+                showToast('Livre supprimé avec succès');
+            }).catch(function () {
+                showToast('Erreur lors de la suppression', 'error');
+            });
         }
 
         addBtn.addEventListener('click', function () { openModal(null); });
@@ -363,40 +373,50 @@
             };
 
             if (editId) {
-                var idx = books.findIndex(function (b) { return b.id === parseInt(editId); });
+                var idx = cache.books.findIndex(function (b) { return b.id === parseInt(editId); });
                 if (idx !== -1) {
-                    books[idx] = Object.assign({}, books[idx], bookData);
+                    cache.books[idx] = Object.assign({}, cache.books[idx], bookData);
                 }
             } else {
-                bookData.id = getNextId(books);
-                books.push(bookData);
+                bookData.id = getNextId(cache.books);
+                cache.books.push(bookData);
             }
 
-            setData('books', books);
-            modal.classList.remove('active');
-            renderBooks();
-            showToast(editId ? 'Livre modifié avec succès' : 'Livre ajouté avec succès');
+            apiSave('books', cache.books).then(function () {
+                modal.classList.remove('active');
+                renderBooks();
+                showToast(editId ? 'Livre modifié avec succès' : 'Livre ajouté avec succès');
+            }).catch(function () {
+                showToast('Erreur lors de l\'enregistrement', 'error');
+            });
         });
 
         setupModalClose(modal);
-        renderBooks();
+        loadAndRender();
     }
 
     // =========================================
     // Blog Management
     // =========================================
     function initBlogAdmin() {
-        var blog = getData('blog', DEFAULT_BLOG);
         var modal = document.getElementById('blog-modal');
         var form = document.getElementById('blog-form');
         var addBtn = document.getElementById('add-blog-btn');
 
+        function loadAndRender() {
+            apiGet('blog').then(function (data) {
+                cache.blog = data;
+                renderBlog();
+            }).catch(function () {
+                showToast('Erreur de chargement du blog', 'error');
+            });
+        }
+
         function renderBlog() {
-            blog = getData('blog', DEFAULT_BLOG);
             var list = document.getElementById('admin-blog-list');
             if (!list) return;
 
-            list.innerHTML = blog.map(function (article) {
+            list.innerHTML = cache.blog.map(function (article) {
                 var dateStr = article.date;
                 try {
                     var d = new Date(article.date);
@@ -436,16 +456,19 @@
         }
 
         function editArticle(id) {
-            var article = blog.find(function (a) { return a.id === id; });
+            var article = cache.blog.find(function (a) { return a.id === id; });
             if (article) openModal(article);
         }
 
         function deleteArticle(id) {
             if (!confirm('Supprimer cet article ?')) return;
-            blog = blog.filter(function (a) { return a.id !== id; });
-            setData('blog', blog);
-            renderBlog();
-            showToast('Article supprimé avec succès');
+            cache.blog = cache.blog.filter(function (a) { return a.id !== id; });
+            apiSave('blog', cache.blog).then(function () {
+                renderBlog();
+                showToast('Article supprimé avec succès');
+            }).catch(function () {
+                showToast('Erreur lors de la suppression', 'error');
+            });
         }
 
         addBtn.addEventListener('click', function () { openModal(null); });
@@ -461,46 +484,52 @@
             };
 
             if (editId) {
-                var idx = blog.findIndex(function (a) { return a.id === parseInt(editId); });
+                var idx = cache.blog.findIndex(function (a) { return a.id === parseInt(editId); });
                 if (idx !== -1) {
-                    blog[idx] = Object.assign({}, blog[idx], articleData);
+                    cache.blog[idx] = Object.assign({}, cache.blog[idx], articleData);
                 }
             } else {
-                articleData.id = getNextId(blog);
-                blog.push(articleData);
+                articleData.id = getNextId(cache.blog);
+                cache.blog.push(articleData);
             }
 
-            setData('blog', blog);
-            modal.classList.remove('active');
-            renderBlog();
-            showToast(editId ? 'Article modifié avec succès' : 'Article publié avec succès');
+            apiSave('blog', cache.blog).then(function () {
+                modal.classList.remove('active');
+                renderBlog();
+                showToast(editId ? 'Article modifié avec succès' : 'Article publié avec succès');
+            }).catch(function () {
+                showToast('Erreur lors de l\'enregistrement', 'error');
+            });
         });
 
         setupModalClose(modal);
-        renderBlog();
+        loadAndRender();
     }
 
     // =========================================
     // About Management
     // =========================================
     function initAboutAdmin() {
-        var about = getData('about', DEFAULT_ABOUT);
         var saveBtn = document.getElementById('save-about-btn');
 
-        // Populate form
-        document.getElementById('about-highlight').value = about.highlight || '';
-        document.getElementById('about-text1').value = about.text1 || '';
-        document.getElementById('about-text2').value = about.text2 || '';
-        document.getElementById('about-text3').value = about.text3 || '';
+        apiGet('about').then(function (about) {
+            cache.about = about;
+            document.getElementById('about-highlight').value = about.highlight || '';
+            document.getElementById('about-text1').value = about.text1 || '';
+            document.getElementById('about-text2').value = about.text2 || '';
+            document.getElementById('about-text3').value = about.text3 || '';
 
-        if (about.stats && about.stats.length >= 3) {
-            document.getElementById('about-stat1-value').value = about.stats[0].value;
-            document.getElementById('about-stat1-label').value = about.stats[0].label;
-            document.getElementById('about-stat2-value').value = about.stats[1].value;
-            document.getElementById('about-stat2-label').value = about.stats[1].label;
-            document.getElementById('about-stat3-value').value = about.stats[2].value;
-            document.getElementById('about-stat3-label').value = about.stats[2].label;
-        }
+            if (about.stats && about.stats.length >= 3) {
+                document.getElementById('about-stat1-value').value = about.stats[0].value;
+                document.getElementById('about-stat1-label').value = about.stats[0].label;
+                document.getElementById('about-stat2-value').value = about.stats[1].value;
+                document.getElementById('about-stat2-label').value = about.stats[1].label;
+                document.getElementById('about-stat3-value').value = about.stats[2].value;
+                document.getElementById('about-stat3-label').value = about.stats[2].label;
+            }
+        }).catch(function () {
+            showToast('Erreur de chargement de la section À Propos', 'error');
+        });
 
         saveBtn.addEventListener('click', function () {
             var data = {
@@ -514,8 +543,12 @@
                     { value: parseInt(document.getElementById('about-stat3-value').value) || 0, label: document.getElementById('about-stat3-label').value }
                 ]
             };
-            setData('about', data);
-            showToast('Section À Propos mise à jour');
+
+            apiSave('about', data).then(function () {
+                showToast('Section À Propos mise à jour');
+            }).catch(function () {
+                showToast('Erreur lors de l\'enregistrement', 'error');
+            });
         });
     }
 
@@ -524,46 +557,49 @@
     // =========================================
     function initSettingsAdmin() {
         var saveBtn = document.getElementById('save-settings-btn');
-        var settings = getData('settings', { title: 'King Bafété', tagline: 'Là où tu es semé, il te fleurira', email: '', phone: '' });
 
-        document.getElementById('setting-title').value = settings.title || '';
-        document.getElementById('setting-tagline').value = settings.tagline || '';
-        document.getElementById('setting-email').value = settings.email || '';
-        document.getElementById('setting-phone').value = settings.phone || '';
-
-        var creds = getData('credentials', DEFAULT_CREDENTIALS);
-        document.getElementById('setting-username').value = creds.username;
+        apiGet('settings').then(function (settings) {
+            cache.settings = settings;
+            document.getElementById('setting-title').value = settings.title || '';
+            document.getElementById('setting-tagline').value = settings.tagline || '';
+            document.getElementById('setting-email').value = settings.email || '';
+            document.getElementById('setting-phone').value = settings.phone || '';
+            if (settings.credentials) {
+                document.getElementById('setting-username').value = settings.credentials.username || 'admin';
+            }
+        }).catch(function () {
+            showToast('Erreur de chargement des paramètres', 'error');
+        });
 
         saveBtn.addEventListener('click', function () {
-            // Save site settings
-            var siteData = {
-                title: document.getElementById('setting-title').value,
-                tagline: document.getElementById('setting-tagline').value,
-                email: document.getElementById('setting-email').value,
-                phone: document.getElementById('setting-phone').value
-            };
-            setData('settings', siteData);
-
-            // Save credentials if changed
-            var newUsername = document.getElementById('setting-username').value;
             var newPassword = document.getElementById('setting-password').value;
             var confirmPassword = document.getElementById('setting-password-confirm').value;
 
-            if (newPassword) {
-                if (newPassword !== confirmPassword) {
-                    showToast('Les mots de passe ne correspondent pas', 'error');
-                    return;
-                }
-                setData('credentials', { username: newUsername, password: newPassword });
-                showToast('Paramètres et identifiants mis à jour');
-            } else {
-                var currentCreds = getData('credentials', DEFAULT_CREDENTIALS);
-                setData('credentials', { username: newUsername, password: currentCreds.password });
-                showToast('Paramètres enregistrés avec succès');
+            if (newPassword && newPassword !== confirmPassword) {
+                showToast('Les mots de passe ne correspondent pas', 'error');
+                return;
             }
 
-            document.getElementById('setting-password').value = '';
-            document.getElementById('setting-password-confirm').value = '';
+            var currentCreds = (cache.settings && cache.settings.credentials) || { username: 'admin', password: 'kingbafete2026' };
+            var settingsData = {
+                title: document.getElementById('setting-title').value,
+                tagline: document.getElementById('setting-tagline').value,
+                email: document.getElementById('setting-email').value,
+                phone: document.getElementById('setting-phone').value,
+                credentials: {
+                    username: document.getElementById('setting-username').value,
+                    password: newPassword || currentCreds.password
+                }
+            };
+
+            apiSave('settings', settingsData).then(function () {
+                cache.settings = settingsData;
+                showToast(newPassword ? 'Paramètres et identifiants mis à jour' : 'Paramètres enregistrés avec succès');
+                document.getElementById('setting-password').value = '';
+                document.getElementById('setting-password-confirm').value = '';
+            }).catch(function () {
+                showToast('Erreur lors de l\'enregistrement', 'error');
+            });
         });
     }
 
@@ -571,17 +607,13 @@
     // Update Dashboard Stats
     // =========================================
     function updateStats() {
-        var gallery = getData('gallery', DEFAULT_GALLERY);
-        var books = getData('books', DEFAULT_BOOKS);
-        var blog = getData('blog', DEFAULT_BLOG);
-
         var statGallery = document.getElementById('stat-gallery');
         var statBooks = document.getElementById('stat-books');
         var statBlog = document.getElementById('stat-blog');
 
-        if (statGallery) statGallery.textContent = gallery.length;
-        if (statBooks) statBooks.textContent = books.length;
-        if (statBlog) statBlog.textContent = blog.length;
+        if (statGallery) statGallery.textContent = cache.gallery.length;
+        if (statBooks) statBooks.textContent = cache.books.length;
+        if (statBlog) statBlog.textContent = cache.blog.length;
     }
 
     // =========================================
@@ -609,7 +641,6 @@
         initBlogAdmin();
         initAboutAdmin();
         initSettingsAdmin();
-        updateStats();
     }
 
     // =========================================

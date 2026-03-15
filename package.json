@@ -1,0 +1,12 @@
+{
+    "name": "kingbafete",
+    "version": "1.0.0",
+    "description": "King Bafété - Site web de contes africains avec panneau d'administration",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "node server.js"
+    },
+    "author": "King Bafété",
+    "license": "ISC"
+}

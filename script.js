@@ -641,6 +641,121 @@
     }
 
     // =========================================
+    // Dynamic Content Loading from JSON
+    // =========================================
+    function initDynamicContent() {
+        var API_BASE = '/api/data';
+
+        function escHtml(text) {
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Category icons for gallery
+        var categoryIcons = {
+            evenements: '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>',
+            livres: '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>',
+            communaute: '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>',
+            medias: '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>'
+        };
+
+        var categoryLabels = { evenements: 'Événement', livres: 'Livres', communaute: 'Communauté', medias: 'Médias' };
+
+        // Load Gallery
+        fetch(API_BASE + '/gallery').then(function (r) { return r.json(); }).then(function (gallery) {
+            var grid = document.getElementById('gallery-grid');
+            var countEl = document.getElementById('gallery-count');
+            if (!grid || !gallery.length) return;
+
+            grid.innerHTML = gallery.map(function (item, i) {
+                var sizeClass = item.size === 'wide' ? ' gallery__item--wide' : item.size === 'tall' ? ' gallery__item--tall' : '';
+                var icon = categoryIcons[item.category] || categoryIcons.evenements;
+                // Use bigger icon for wide items
+                if (item.size === 'wide') {
+                    icon = icon.replace('width="48"', 'width="64"').replace('height="48"', 'height="64"');
+                }
+
+                return '<div class="gallery__item' + sizeClass + '" data-category="' + escHtml(item.category) + '" data-aos="fade-up" data-aos-delay="' + (i * 50) + '">' +
+                    '<div class="gallery__image" style="background: linear-gradient(135deg, ' + escHtml(item.color1) + ' 0%, ' + escHtml(item.color2) + ' 100%);">' +
+                    '<div class="gallery__image-content">' + icon + '</div>' +
+                    '</div>' +
+                    '<div class="gallery__overlay">' +
+                    '<span class="gallery__category-tag">' + escHtml(categoryLabels[item.category] || item.category) + '</span>' +
+                    '<h4 class="gallery__caption">' + escHtml(item.caption) + '</h4>' +
+                    '<p class="gallery__date">' + escHtml(item.date) + '</p>' +
+                    '</div>' +
+                    '<button class="gallery__zoom" aria-label="Agrandir"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg></button>' +
+                    '</div>';
+            }).join('');
+
+            if (countEl) countEl.textContent = gallery.length;
+
+            // Re-init gallery interactions after dynamic load
+            initGallery();
+            // Re-init AOS for new elements
+            initAnimations();
+        }).catch(function () {
+            // Silently fail - keep static HTML content
+        });
+
+        // Load Blog
+        fetch(API_BASE + '/blog').then(function (r) { return r.json(); }).then(function (blog) {
+            var blogGrid = document.querySelector('.blog__grid');
+            if (!blogGrid || !blog.length) return;
+
+            blogGrid.innerHTML = blog.map(function (article, i) {
+                var dateStr = article.date;
+                try {
+                    var d = new Date(article.date);
+                    if (!isNaN(d.getTime())) {
+                        dateStr = d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+                    }
+                } catch (e) { /* keep original */ }
+
+                var isFeatured = i === 0;
+                return '<article class="blog-card' + (isFeatured ? ' blog-card--featured' : '') + '" data-aos="fade-up" data-aos-delay="' + (i * 100) + '">' +
+                    (isFeatured ? '<div class="blog-card__image"><div class="blog__placeholder"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg></div></div>' : '') +
+                    '<div class="blog-card__content">' +
+                    '<div class="blog-card__meta">' +
+                    '<span class="blog-card__category">' + escHtml(article.category) + '</span>' +
+                    '<span class="blog-card__date">' + escHtml(dateStr) + '</span>' +
+                    '</div>' +
+                    '<h3 class="blog-card__title">' + escHtml(article.title) + '</h3>' +
+                    '<p class="blog-card__excerpt">' + escHtml(article.excerpt) + '</p>' +
+                    '<a href="#" class="blog-card__link">Lire la suite →</a>' +
+                    '</div></article>';
+            }).join('');
+        }).catch(function () { /* keep static */ });
+
+        // Load About
+        fetch(API_BASE + '/about').then(function (r) { return r.json(); }).then(function (about) {
+            var highlight = document.querySelector('.intro__highlight');
+            var textPs = document.querySelectorAll('.about__text p');
+            var counters = document.querySelectorAll('[data-count]');
+
+            if (highlight && about.highlight) highlight.textContent = about.highlight;
+            if (textPs.length >= 3) {
+                if (about.text1) textPs[0].textContent = about.text1;
+                if (about.text2) textPs[1].innerHTML = about.text2.replace('SOFIFRAN', '<strong>SOFIFRAN</strong>');
+                if (about.text3) textPs[2].innerHTML = about.text3.replace('SOFIFRAN', '<strong>SOFIFRAN</strong>');
+            }
+            if (about.stats && about.stats.length >= 3 && counters.length >= 3) {
+                counters[0].setAttribute('data-count', about.stats[0].value);
+                counters[1].setAttribute('data-count', about.stats[1].value);
+                counters[2].setAttribute('data-count', about.stats[2].value);
+
+                var labels = document.querySelectorAll('.stat__label');
+                if (labels.length >= 3) {
+                    labels[0].textContent = about.stats[0].label;
+                    labels[1].textContent = about.stats[1].label;
+                    labels[2].textContent = about.stats[2].label;
+                }
+            }
+        }).catch(function () { /* keep static */ });
+    }
+
+    // =========================================
     // Video Play Buttons
     // =========================================
     function initVideoPlayers() {
@@ -678,6 +793,7 @@
         initKeyboardNav();
         initCursorEffect();
         initGallery();
+        initDynamicContent();
         initVideoPlayers();
     }
 
