@@ -1,4 +1,8 @@
 #!/bin/sh
-npx prisma db push || echo "DB push skipped"
-node server/seed.js || echo "Seed skipped"
+echo "=== Starting King Bafete ==="
+echo "Running prisma db push..."
+npx prisma db push || echo "DB push failed"
+echo "Running seed..."
+node server/seed.js || echo "Seed failed"
+echo "Starting server..."
 node server/index.js
