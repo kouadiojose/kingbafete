@@ -125,6 +125,5 @@ async function seed() {
 }
 
 seed().catch((e) => {
-  console.error(e);
-  process.exit(1);
+  console.error('Seed error (non-fatal):', e.message);
 });
