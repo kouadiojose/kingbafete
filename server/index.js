@@ -19,15 +19,10 @@ app.use(fileUpload({
 // Trust proxy (Railway, Render, etc.)
 app.set('trust proxy', 1);
 
-// Session with PostgreSQL store
-const pgSession = require('connect-pg-simple')(session);
+// Session
 app.use(session({
-  store: new pgSession({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: true,
-  }),
   secret: process.env.SESSION_SECRET || 'kingbafete-secret-change-me',
-  resave: false,
+  resave: true,
   saveUninitialized: false,
   proxy: true,
   cookie: {

@@ -64,9 +64,15 @@
         </form>
     </div>
     <script>
-        if (new URLSearchParams(window.location.search).has('error')) {
+        const errorCode = new URLSearchParams(window.location.search).get('error');
+        if (errorCode) {
             const err = document.getElementById('error');
-            err.textContent = 'Email ou mot de passe incorrect';
+            const messages = {
+                'user': 'Utilisateur non trouvé (le seed n\'a pas créé le compte admin)',
+                'password': 'Mot de passe incorrect',
+                'session': 'Erreur de sauvegarde de session',
+            };
+            err.textContent = messages[errorCode] || 'Erreur: ' + errorCode;
             err.style.display = 'block';
         }
     </script>

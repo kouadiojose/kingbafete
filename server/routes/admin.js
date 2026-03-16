@@ -14,37 +14,29 @@ router.post('/login', async (req, res) => {
   try {
     const prisma = req.app.locals.prisma;
     const { email, password } = req.body;
-    const isJson = req.headers['content-type']?.includes('application/json');
-    console.log('Login attempt for:', email, '| session ID:', req.sessionID);
+    console.log('Login attempt for:', email);
     const user = await prisma.adminUser.findUnique({ where: { email } });
     if (!user) {
       console.log('User not found:', email);
-      if (isJson) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
-      return res.redirect('/admin/login?error=1');
+      return res.redirect('/admin/login?error=user');
     }
     if (!bcrypt.compareSync(password, user.password)) {
       console.log('Wrong password for:', email);
-      if (isJson) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
-      return res.redirect('/admin/login?error=1');
+      return res.redirect('/admin/login?error=password');
     }
     req.session.adminId = user.id;
     req.session.adminName = user.name;
     req.session.save((err) => {
       if (err) {
         console.error('Session save error:', err);
-        if (isJson) return res.status(500).json({ error: 'Erreur de session' });
-        return res.redirect('/admin/login?error=1');
+        return res.redirect('/admin/login?error=session');
       }
-      console.log('Login OK for:', email, '| session ID:', req.sessionID, '| adminId:', user.id);
-      if (isJson) return res.json({ success: true });
+      console.log('Login OK for:', email);
       res.redirect('/admin');
     });
   } catch (err) {
     console.error('Login error:', err);
-    if (req.headers['content-type']?.includes('application/json')) {
-      return res.status(500).json({ error: 'Erreur serveur' });
-    }
-    res.redirect('/admin/login?error=1');
+    res.redirect('/admin/login?error=server-' + encodeURIComponent(err.message));
   }
 });
 
