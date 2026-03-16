@@ -51,7 +51,7 @@
         <h1>King Bafété</h1>
         <p>Panneau d'administration</p>
         <div class="error" id="error"></div>
-        <form id="loginForm">
+        <form id="loginForm" method="POST" action="/admin/login">
             <div class="form-group">
                 <label>Email</label>
                 <input type="email" name="email" required autocomplete="email">
@@ -64,31 +64,11 @@
         </form>
     </div>
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const errEl = document.getElementById('error');
-            errEl.style.display = 'none';
-            try {
-                const form = new FormData(e.target);
-                const data = { email: form.get('email'), password: form.get('password') };
-                const res = await fetch('/admin/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'same-origin',
-                    body: JSON.stringify(data),
-                });
-                const json = await res.json();
-                if (json.success) {
-                    window.location.href = '/admin';
-                } else {
-                    errEl.textContent = json.error || 'Erreur de connexion';
-                    errEl.style.display = 'block';
-                }
-            } catch (err) {
-                errEl.textContent = 'Erreur réseau: ' + err.message;
-                errEl.style.display = 'block';
-            }
-        });
+        if (new URLSearchParams(window.location.search).has('error')) {
+            const err = document.getElementById('error');
+            err.textContent = 'Email ou mot de passe incorrect';
+            err.style.display = 'block';
+        }
     </script>
 </body>
 </html>

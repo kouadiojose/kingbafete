@@ -14,29 +14,37 @@ router.post('/login', async (req, res) => {
   try {
     const prisma = req.app.locals.prisma;
     const { email, password } = req.body;
-    console.log('Login attempt for:', email);
+    const isJson = req.headers['content-type']?.includes('application/json');
+    console.log('Login attempt for:', email, '| session ID:', req.sessionID);
     const user = await prisma.adminUser.findUnique({ where: { email } });
     if (!user) {
       console.log('User not found:', email);
-      return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
+      if (isJson) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
+      return res.redirect('/admin/login?error=1');
     }
     if (!bcrypt.compareSync(password, user.password)) {
       console.log('Wrong password for:', email);
-      return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
+      if (isJson) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
+      return res.redirect('/admin/login?error=1');
     }
     req.session.adminId = user.id;
     req.session.adminName = user.name;
     req.session.save((err) => {
       if (err) {
         console.error('Session save error:', err);
-        return res.status(500).json({ error: 'Erreur de session' });
+        if (isJson) return res.status(500).json({ error: 'Erreur de session' });
+        return res.redirect('/admin/login?error=1');
       }
-      console.log('Login successful for:', email);
-      res.json({ success: true });
+      console.log('Login OK for:', email, '| session ID:', req.sessionID, '| adminId:', user.id);
+      if (isJson) return res.json({ success: true });
+      res.redirect('/admin');
     });
   } catch (err) {
     console.error('Login error:', err);
-    res.status(500).json({ error: 'Erreur serveur' });
+    if (req.headers['content-type']?.includes('application/json')) {
+      return res.status(500).json({ error: 'Erreur serveur' });
+    }
+    res.redirect('/admin/login?error=1');
   }
 });
 
