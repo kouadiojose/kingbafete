@@ -19,7 +19,9 @@ router.post('/login', async (req, res) => {
   }
   req.session.adminId = user.id;
   req.session.adminName = user.name;
-  res.json({ success: true });
+  req.session.save(() => {
+    res.json({ success: true });
+  });
 });
 
 router.post('/logout', (req, res) => {

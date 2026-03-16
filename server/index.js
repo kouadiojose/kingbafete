@@ -16,20 +16,20 @@ app.use(fileUpload({
   createParentPath: true,
 }));
 
+// Trust proxy (Railway, Render, etc.)
+app.set('trust proxy', 1);
+
 // Session
 app.use(session({
   secret: process.env.SESSION_SECRET || 'kingbafete-secret-change-me',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production' && process.env.TRUST_PROXY === '1',
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
     maxAge: 24 * 60 * 60 * 1000, // 24h
   },
 }));
-
-if (process.env.TRUST_PROXY === '1') {
-  app.set('trust proxy', 1);
-}
 
 // Make prisma available in routes
 app.locals.prisma = prisma;
