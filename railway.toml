@@ -6,4 +6,4 @@ dockerfilePath = "Dockerfile"
 healthcheckPath = "/"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
-startCommand = "(npx prisma db push && node server/seed.js) || true; node server/index.js"
+startCommand = "sh start.sh"

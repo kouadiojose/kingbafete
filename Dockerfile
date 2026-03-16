@@ -10,6 +10,7 @@ COPY package.json ./
 RUN npm install --omit=dev
 
 # Copy application code
+COPY start.sh ./
 COPY server ./server/
 COPY public ./public/
 
