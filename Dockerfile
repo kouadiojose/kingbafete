@@ -2,13 +2,12 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies
-COPY package.json ./
-RUN npm install --production
-
-# Copy prisma schema and generate client
+# Copy prisma schema first (needed by postinstall)
 COPY prisma ./prisma/
-RUN npx prisma generate
+
+# Install dependencies (postinstall runs prisma generate)
+COPY package.json ./
+RUN npm install --omit=dev
 
 # Copy application code
 COPY server ./server/
