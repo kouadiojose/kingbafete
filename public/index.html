@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="King Bafété - L'univers des contes africains de Madame Fété Ngira-Batware Kimpiobi. Voyagez à travers les cultures grâce aux contes.">
-    <title>King Bafété | Contes Africains</title>
+    <meta name="description" content="Kingbafete - L'univers des contes africains de Madame Fété Ngira-Batware Kimpiobi. Voyagez à travers les cultures grâce aux contes.">
+    <title>Kingbafete | Contes Africains</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -24,7 +24,7 @@
     <header class="header" id="header">
         <nav class="nav container">
             <a href="#" class="nav__logo">
-                <span class="logo-text">King Bafété</span>
+                <span class="logo-text" id="site-logo">Kingbafete</span>
             </a>
 
             <div class="nav__menu" id="nav-menu">
@@ -43,6 +43,9 @@
                     </li>
                     <li class="nav__item">
                         <a href="#blog" class="nav__link">Blog</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="/contes" class="nav__link">Contes</a>
                     </li>
                     <li class="nav__item">
                         <a href="#galerie" class="nav__link">Galerie</a>
@@ -138,8 +141,8 @@
                         </div>
                         <div class="image__decoration"></div>
                         <div class="image__badge">
-                            <span class="badge__year">2019</span>
-                            <span class="badge__text">Chevalière de l'Ordre de la Pléiade</span>
+                            <span class="badge__year" id="badge-year">2018</span>
+                            <span class="badge__text" id="badge-text">Chevalière de l'Ordre de la Pléiade</span>
                         </div>
                     </div>
 
@@ -199,129 +202,17 @@
                     <span class="section__subtitle">Collection</span>
                     <h2 class="section__title">Mes Livres</h2>
                     <div class="section__line"></div>
-                    <p class="section__description">
-                        Découvrez une collection unique de contes africains qui transmettent
-                        la sagesse des traditions et des mythes du Congo et de l'Afrique.
+                    <p class="section__description" id="books-description">
+                        Explorez une collection de récits qui célèbrent la richesse des traditions
+                        orales du Congo et de l'Afrique, transmises de génération en génération.
                     </p>
                 </div>
 
-                <!-- Featured Book -->
-                <div class="book-featured" data-aos="fade-up">
-                    <div class="book-featured__badge">Va bientôt paraître</div>
-                    <div class="book-featured__content">
-                        <div class="book-featured__image">
-                            <img src="images/devoir-de-memoire.jpg" alt="Devoir de Mémoire - Autobiographie de Yvon Kimpiobi-Ninafiding Nki-Ekundi" class="book-featured__cover">
-                        </div>
-                        <div class="book-featured__info">
-                            <span class="book-featured__author">Yvon Kimpiobi-Ninafiding Nki-Ekundi</span>
-                            <h3 class="book-featured__title">Devoir de Mémoire</h3>
-                            <p class="book-featured__subtitle">Autobiographie (Publié à titre posthume)</p>
-                            <p class="book-featured__description">
-                                Un des acteurs privilégiés de la lutte anticoloniale et pionnière de
-                                l'indépendance du Congo, en harmonie avec la sagesse de ses ancêtres,
-                                a tenu avant de quitter cette terre, d'y restituer ce qu'il y avait reçu...
-                                <br><br>
-                                Ce « récit de vie » relaté à son gendre Clément Ngira-Batware, à l'âge de 84 ans
-                                alors qu'il était frappé de cécité, est une preuve de sa générosité et son sens
-                                aigu du devoir et du patriotisme.
-                            </p>
-                            <div class="book-featured__meta">
-                                <span class="book-featured__publisher">Les éditions L'Empreinte du Passant</span>
-                            </div>
-                            <div class="book-featured__buttons">
-                                <a href="https://www.amazon.com" target="_blank" class="btn btn--primary">
-                                    <span>Acheter sur Amazon</span>
-                                </a>
-                                <a href="#contact" class="btn btn--outline">
-                                    <span>Commander sur le site</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Featured Book (loaded from API) -->
+                <div id="book-featured-container"></div>
 
-                <!-- Books Grid -->
-                <div class="books__grid">
-                    <article class="book-card" data-aos="fade-up" data-aos-delay="0">
-                        <div class="book-card__image">
-                            <img src="images/livre-dias.jpg" alt="Dias, Thérapeute et Homme léopard - Fété Ngira-Batware Kimpiobi" class="book-card__cover">
-                            <div class="book-card__overlay">
-                                <a href="#" class="btn btn--small">Voir détails</a>
-                            </div>
-                        </div>
-                        <div class="book-card__content">
-                            <h3 class="book-card__title">Dias, Thérapeute et Homme léopard</h3>
-                            <p class="book-card__description">
-                                Grand-père Dias était un homme ordinaire, humble et sans histoire
-                                seulement en apparence, car il en circulait beaucoup, derrière son dos.
-                            </p>
-                            <div class="book-card__footer">
-                                <span class="book-card__price">$12.00</span>
-                                <a href="#" class="book-card__link">Acheter →</a>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article class="book-card" data-aos="fade-up" data-aos-delay="100">
-                        <div class="book-card__image">
-                            <img src="images/livre-nyota.jpg" alt="Nyota, le secret de la plume - Éditions L'Harmattan" class="book-card__cover">
-                            <div class="book-card__overlay">
-                                <a href="#" class="btn btn--small">Voir détails</a>
-                            </div>
-                        </div>
-                        <div class="book-card__content">
-                            <h3 class="book-card__title">Nyota, le secret de la plume</h3>
-                            <p class="book-card__description">
-                                Une histoire captivante qui révèle les secrets ancestraux
-                                transmis de génération en génération.
-                            </p>
-                            <div class="book-card__footer">
-                                <span class="book-card__price">$25.00</span>
-                                <a href="#" class="book-card__link">Acheter →</a>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article class="book-card" data-aos="fade-up" data-aos-delay="200">
-                        <div class="book-card__image">
-                            <img src="images/livre-soleil-lune.jpg" alt="Le Soleil, la Lune et les Étoiles - Les contes de maman Fété" class="book-card__cover">
-                            <div class="book-card__overlay">
-                                <a href="#" class="btn btn--small">Voir détails</a>
-                            </div>
-                        </div>
-                        <div class="book-card__content">
-                            <h3 class="book-card__title">Le Soleil, la Lune et les Étoiles</h3>
-                            <p class="book-card__description">
-                                Les contes de maman Fété : Le Soleil, la Lune et les Étoiles,
-                                le Coq, la Poule et les Poussins.
-                            </p>
-                            <div class="book-card__footer">
-                                <span class="book-card__price">$15.00</span>
-                                <a href="#" class="book-card__link">Acheter →</a>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article class="book-card" data-aos="fade-up" data-aos-delay="300">
-                        <div class="book-card__image">
-                            <img src="images/livre-mois-espoir.jpg" alt="Mois d'Espoir - Mélanges pour l'Afrique" class="book-card__cover">
-                            <div class="book-card__overlay">
-                                <a href="#" class="btn btn--small">Voir détails</a>
-                            </div>
-                        </div>
-                        <div class="book-card__content">
-                            <h3 class="book-card__title">Mois d'Espoir - Mélanges pour l'Afrique</h3>
-                            <p class="book-card__description">
-                                Une compilation unique célébrant la richesse culturelle
-                                et l'espoir du continent africain.
-                            </p>
-                            <div class="book-card__footer">
-                                <span class="book-card__price">$15.00</span>
-                                <a href="#" class="book-card__link">Acheter →</a>
-                            </div>
-                        </div>
-                    </article>
-                </div>
+                <!-- Books Grid (loaded from API) -->
+                <div class="books__grid" id="books-grid"></div>
 
                 <div class="books__cta" data-aos="fade-up">
                     <a href="#" class="btn btn--primary btn--large">
@@ -343,55 +234,8 @@
                     <div class="section__line"></div>
                 </div>
 
-                <div class="interviews__grid">
-                    <article class="interview-card" data-aos="fade-up" data-aos-delay="0">
-                        <div class="interview-card__video">
-                            <iframe
-                                src="https://www.youtube.com/embed/EwzxWynhULw"
-                                title="En conversation avec Fété Ngira-Batware Kimpiobi"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen
-                                class="video__iframe">
-                            </iframe>
-                        </div>
-                        <div class="interview-card__content">
-                            <span class="interview-card__date">2022</span>
-                            <h3 class="interview-card__title">En conversation avec Fété Ngira-Batware Kimpiobi</h3>
-                        </div>
-                    </article>
-
-                    <article class="interview-card" data-aos="fade-up" data-aos-delay="100">
-                        <div class="interview-card__video">
-                            <div class="video__placeholder">
-                                <div class="play-button">
-                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-                                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="video__badge">Canada ACFO</div>
-                        </div>
-                        <div class="interview-card__content">
-                            <h3 class="interview-card__title">Écrire pour exister - Fété Ngira-Batwaré Kimpiobi</h3>
-                        </div>
-                    </article>
-
-                    <article class="interview-card" data-aos="fade-up" data-aos-delay="200">
-                        <div class="interview-card__video">
-                            <div class="video__placeholder">
-                                <div class="play-button">
-                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-                                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="video__badge">Capital TV</div>
-                        </div>
-                        <div class="interview-card__content">
-                            <h3 class="interview-card__title">Fété Ngira-Batware Kimpiobi, Directrice Générale de SOFIFRAN</h3>
-                        </div>
-                    </article>
+                <div class="interviews__grid" id="interviews-grid">
+                    <!-- Loaded dynamically from API -->
                 </div>
             </div>
         </section>
@@ -405,59 +249,8 @@
                     <div class="section__line"></div>
                 </div>
 
-                <div class="blog__grid">
-                    <article class="blog-card blog-card--featured" data-aos="fade-up">
-                        <div class="blog-card__image">
-                            <div class="blog__placeholder">
-                                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                    <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
-                                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
-                                    <path d="M2 2l7.586 7.586"></path>
-                                    <circle cx="11" cy="11" r="2"></circle>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="blog-card__content">
-                            <div class="blog-card__meta">
-                                <span class="blog-card__category">Culture</span>
-                                <span class="blog-card__date">15 Décembre 2025</span>
-                            </div>
-                            <h3 class="blog-card__title">L'importance de préserver nos traditions orales</h3>
-                            <p class="blog-card__excerpt">
-                                La transmission orale est le pilier de notre culture africaine.
-                                Découvrez pourquoi il est crucial de documenter ces trésors...
-                            </p>
-                            <a href="#" class="blog-card__link">Lire la suite →</a>
-                        </div>
-                    </article>
-
-                    <article class="blog-card" data-aos="fade-up" data-aos-delay="100">
-                        <div class="blog-card__content">
-                            <div class="blog-card__meta">
-                                <span class="blog-card__category">Événement</span>
-                                <span class="blog-card__date">10 Décembre 2025</span>
-                            </div>
-                            <h3 class="blog-card__title">Rencontre littéraire à Toronto</h3>
-                            <p class="blog-card__excerpt">
-                                Rejoignez-nous pour une soirée de contes et de partage...
-                            </p>
-                            <a href="#" class="blog-card__link">Lire la suite →</a>
-                        </div>
-                    </article>
-
-                    <article class="blog-card" data-aos="fade-up" data-aos-delay="200">
-                        <div class="blog-card__content">
-                            <div class="blog-card__meta">
-                                <span class="blog-card__category">Littérature</span>
-                                <span class="blog-card__date">5 Décembre 2025</span>
-                            </div>
-                            <h3 class="blog-card__title">Mon parcours d'écrivaine</h3>
-                            <p class="blog-card__excerpt">
-                                De Kinshasa à Welland, comment l'écriture m'a permis de rester connectée...
-                            </p>
-                            <a href="#" class="blog-card__link">Lire la suite →</a>
-                        </div>
-                    </article>
+                <div class="blog__grid" id="blog-grid">
+                    <!-- Loaded dynamically from API -->
                 </div>
 
                 <div class="blog__cta" data-aos="fade-up">
@@ -477,61 +270,8 @@
                     <div class="section__line"></div>
                 </div>
 
-                <div class="gallery__grid">
-                    <div class="gallery__item gallery__item--wide" data-aos="fade-up">
-                        <div class="gallery__placeholder">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="gallery__item" data-aos="fade-up" data-aos-delay="50">
-                        <div class="gallery__placeholder">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="gallery__item" data-aos="fade-up" data-aos-delay="100">
-                        <div class="gallery__placeholder">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="gallery__item" data-aos="fade-up" data-aos-delay="150">
-                        <div class="gallery__placeholder">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="gallery__item gallery__item--tall" data-aos="fade-up" data-aos-delay="200">
-                        <div class="gallery__placeholder">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="gallery__item" data-aos="fade-up" data-aos-delay="250">
-                        <div class="gallery__placeholder">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                <polyline points="21 15 16 10 5 21"></polyline>
-                            </svg>
-                        </div>
-                    </div>
+                <div class="gallery__grid" id="gallery-grid">
+                    <!-- Loaded dynamically from API -->
                 </div>
             </div>
         </section>
@@ -593,7 +333,7 @@
                             </div>
                             <div class="contact__details">
                                 <h4>Email</h4>
-                                <p>contact@kingbafete.com</p>
+                                <p id="contact-email">fetekimpiobi01@gmail.com</p>
                             </div>
                         </div>
 
@@ -657,7 +397,7 @@
         <div class="container">
             <div class="footer__top">
                 <div class="footer__brand">
-                    <a href="#" class="footer__logo">King Bafété</a>
+                    <a href="#" class="footer__logo">Kingbafete</a>
                     <p class="footer__tagline">"Là où tu es semé, il te fleurira"</p>
                 </div>
                 <nav class="footer__nav">
@@ -666,12 +406,13 @@
                     <a href="#livres">Livres</a>
                     <a href="#contact">Contact</a>
                     <a href="#blog">Blog</a>
+                    <a href="/contes">Contes</a>
                     <a href="#galerie">Galerie</a>
                 </nav>
             </div>
             <div class="footer__bottom">
                 <p class="footer__copyright">
-                    &copy; 2026 King Bafété. Tous droits réservés.
+                    &copy; 2026 Kingbafete. Tous droits réservés.
                 </p>
             </div>
         </div>

@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+}
+
+model SiteSettings {
+  id          Int    @id @default(1)
+  siteName    String @default("King Bafété")
+  motto       String @default("Là où tu es semé, il te fleurira")
+  heroTitle   String @default("Dans l'Univers des Contes Africains")
+  heroSubtitle String @default("Voyagez à travers les cultures grâce aux contes")
+  aboutTitle  String @default("À Propos de l'Auteure")
+  aboutIntro  String @default("")
+  aboutText   String @default("")
+  aboutPhoto  String @default("")
+  badgeYear   String @default("2018")
+  badgeText   String @default("Chevalière de l'Ordre de la Pléiade")
+  contactEmail String @default("fetekimpiobi01@gmail.com")
+  contactAddress String @default("Welland, Ontario, Canada")
+  facebookUrl  String @default("")
+  instagramUrl String @default("")
+  youtubeUrl   String @default("")
+  logoUrl      String @default("")
+  booksDescription String @default("")
+}
+
+model Book {
+  id          Int      @id @default(autoincrement())
+  title       String
+  author      String   @default("Fété Ngira-Batware Kimpiobi")
+  description String
+  price       String   @default("")
+  coverImage  String   @default("")
+  amazonUrl   String   @default("")
+  publisher   String   @default("")
+  featured    Boolean  @default(false)
+  badge       String   @default("")
+  subtitle    String   @default("")
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Interview {
+  id        Int      @id @default(autoincrement())
+  title     String
+  youtubeUrl String
+  badge     String   @default("")
+  date      String   @default("")
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BlogPost {
+  id        Int      @id @default(autoincrement())
+  title     String
+  slug      String   @unique
+  excerpt   String   @default("")
+  content   String   @default("")
+  category  String   @default("Culture")
+  image     String   @default("")
+  featured  Boolean  @default(false)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Conte {
+  id        Int      @id @default(autoincrement())
+  title     String
+  slug      String   @unique
+  excerpt   String   @default("")
+  content   String   @default("")
+  image     String   @default("")
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GalleryImage {
+  id        Int      @id @default(autoincrement())
+  title     String   @default("")
+  caption   String   @default("")
+  imageUrl  String
+  category  String   @default("general")
+  wide      Boolean  @default(false)
+  tall      Boolean  @default(false)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  subject   String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

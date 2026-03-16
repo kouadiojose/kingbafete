@@ -308,9 +308,18 @@
             `;
             btn.disabled = true;
 
-            // Simulate form submission
-            setTimeout(() => {
-                // Show success
+            // Send to API
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            const form = this;
+
+            fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            })
+            .then(res => res.json())
+            .then(result => {
                 btn.innerHTML = `
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="20 6 9 17 4 12"></polyline>
@@ -318,18 +327,22 @@
                     <span>Message envoyé!</span>
                 `;
                 btn.style.background = '#27ae60';
-
-                // Reset form
-                this.reset();
-
-                // Reset button after delay
+                form.reset();
                 setTimeout(() => {
                     btn.innerHTML = originalText;
                     btn.disabled = false;
                     btn.style.background = '';
                 }, 3000);
-
-            }, 2000);
+            })
+            .catch(() => {
+                btn.innerHTML = '<span>Erreur, réessayez</span>';
+                btn.style.background = '#e74c3c';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    btn.style.background = '';
+                }, 3000);
+            });
         });
 
         // Floating labels enhancement
@@ -528,6 +541,139 @@
     }
 
     // =========================================
+    // Dynamic Content Loading from API
+    // =========================================
+    function getYouTubeEmbedUrl(url) {
+        if (!url) return '';
+        const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+        return match ? 'https://www.youtube.com/embed/' + match[1] : url;
+    }
+
+    async function loadDynamicContent() {
+        try {
+            const [books, interviews, blogPosts, gallery] = await Promise.all([
+                fetch('/api/books').then(r => r.json()).catch(() => []),
+                fetch('/api/interviews').then(r => r.json()).catch(() => []),
+                fetch('/api/blog').then(r => r.json()).catch(() => []),
+                fetch('/api/gallery').then(r => r.json()).catch(() => []),
+            ]);
+
+            // Render books
+            const featuredBook = books.find(b => b.featured);
+            const regularBooks = books.filter(b => !b.featured);
+            const featuredContainer = document.getElementById('book-featured-container');
+            const booksGrid = document.getElementById('books-grid');
+
+            if (featuredBook && featuredContainer) {
+                featuredContainer.innerHTML = `
+                    <div class="book-featured" data-aos="fade-up">
+                        ${featuredBook.badge ? `<div class="book-featured__badge">${featuredBook.badge}</div>` : ''}
+                        <div class="book-featured__content">
+                            <div class="book-featured__image">
+                                ${featuredBook.coverImage
+                                    ? `<img src="${featuredBook.coverImage}" alt="${featuredBook.title}" class="book-featured__cover">`
+                                    : `<div class="book__cover book__cover--placeholder"><span>${featuredBook.title}</span></div>`}
+                            </div>
+                            <div class="book-featured__info">
+                                <span class="book-featured__author">${featuredBook.author}</span>
+                                <h3 class="book-featured__title">${featuredBook.title}</h3>
+                                ${featuredBook.subtitle ? `<p class="book-featured__subtitle">${featuredBook.subtitle}</p>` : ''}
+                                <p class="book-featured__description">${featuredBook.description.replace(/\n/g, '<br>')}</p>
+                                ${featuredBook.publisher ? `<div class="book-featured__meta"><span class="book-featured__publisher">${featuredBook.publisher}</span></div>` : ''}
+                                <div class="book-featured__buttons">
+                                    ${featuredBook.amazonUrl ? `<a href="${featuredBook.amazonUrl}" target="_blank" class="btn btn--primary"><span>Acheter sur Amazon</span></a>` : ''}
+                                    <a href="#contact" class="btn btn--outline"><span>Commander sur le site</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+
+            if (booksGrid) {
+                booksGrid.innerHTML = regularBooks.map((b, i) => `
+                    <article class="book-card" data-aos="fade-up" data-aos-delay="${i * 100}">
+                        <div class="book-card__image">
+                            ${b.coverImage
+                                ? `<img src="${b.coverImage}" alt="${b.title}" class="book-card__cover">`
+                                : `<div class="book-card__cover" style="aspect-ratio:3/4;background:linear-gradient(135deg,var(--color-primary),var(--color-primary-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-heading);padding:1rem;text-align:center;">${b.title}</div>`}
+                            <div class="book-card__overlay">
+                                ${b.amazonUrl ? `<a href="${b.amazonUrl}" target="_blank" class="btn btn--small">Acheter</a>` : `<a href="#contact" class="btn btn--small">Commander</a>`}
+                            </div>
+                        </div>
+                        <div class="book-card__content">
+                            <h3 class="book-card__title">${b.title}</h3>
+                            <p class="book-card__description">${b.description}</p>
+                            <div class="book-card__footer">
+                                ${b.price ? `<span class="book-card__price">${b.price}</span>` : '<span></span>'}
+                                ${b.amazonUrl ? `<a href="${b.amazonUrl}" target="_blank" class="book-card__link">Acheter →</a>` : `<a href="#contact" class="book-card__link">Commander →</a>`}
+                            </div>
+                        </div>
+                    </article>`).join('');
+            }
+
+            // Render interviews
+            const interviewsGrid = document.getElementById('interviews-grid');
+            if (interviewsGrid && interviews.length > 0) {
+                interviewsGrid.innerHTML = interviews.map((iv, i) => `
+                    <article class="interview-card" data-aos="fade-up" data-aos-delay="${i * 100}">
+                        <div class="interview-card__video">
+                            <iframe src="${getYouTubeEmbedUrl(iv.youtubeUrl)}" title="${iv.title}"
+                                frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen class="video__iframe"></iframe>
+                            ${iv.badge ? `<div class="video__badge">${iv.badge}</div>` : ''}
+                        </div>
+                        <div class="interview-card__content">
+                            ${iv.date ? `<span class="interview-card__date">${iv.date}</span>` : ''}
+                            <h3 class="interview-card__title">${iv.title}</h3>
+                        </div>
+                    </article>`).join('');
+            }
+
+            // Render blog
+            const blogGrid = document.getElementById('blog-grid');
+            if (blogGrid && blogPosts.length > 0) {
+                blogGrid.innerHTML = blogPosts.map((p, i) => `
+                    <article class="blog-card ${i === 0 ? 'blog-card--featured' : ''}" data-aos="fade-up" data-aos-delay="${i * 100}">
+                        ${i === 0 && p.image ? `<div class="blog-card__image"><img src="${p.image}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;"></div>` :
+                          i === 0 ? `<div class="blog-card__image"><div class="blog__placeholder"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path></svg></div></div>` : ''}
+                        <div class="blog-card__content">
+                            <div class="blog-card__meta">
+                                <span class="blog-card__category">${p.category}</span>
+                                <span class="blog-card__date">${new Date(p.createdAt).toLocaleDateString('fr-CA', {day:'numeric',month:'long',year:'numeric'})}</span>
+                            </div>
+                            <h3 class="blog-card__title">${p.title}</h3>
+                            <p class="blog-card__excerpt">${p.excerpt}</p>
+                            <a href="/blog/${p.slug}" class="blog-card__link">Lire la suite →</a>
+                        </div>
+                    </article>`).join('');
+            }
+
+            // Render gallery
+            const galleryGrid = document.getElementById('gallery-grid');
+            if (galleryGrid && gallery.length > 0) {
+                galleryGrid.innerHTML = gallery.map((g, i) => `
+                    <div class="gallery__item ${g.wide ? 'gallery__item--wide' : ''} ${g.tall ? 'gallery__item--tall' : ''}" data-aos="fade-up" data-aos-delay="${i * 50}">
+                        <img src="${g.imageUrl}" alt="${g.title || g.caption || ''}" style="width:100%;height:100%;object-fit:cover;">
+                    </div>`).join('');
+            } else if (galleryGrid) {
+                // Show placeholders if no images yet
+                galleryGrid.innerHTML = Array.from({length: 6}, (_, i) => `
+                    <div class="gallery__item ${i === 0 ? 'gallery__item--wide' : ''} ${i === 4 ? 'gallery__item--tall' : ''}" data-aos="fade-up" data-aos-delay="${i * 50}">
+                        <div class="gallery__placeholder">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                        </div>
+                    </div>`).join('');
+            }
+
+            // Re-init animations for dynamically loaded content
+            initAnimations();
+
+        } catch (err) {
+            console.log('API not available, showing static content');
+        }
+    }
+
+    // =========================================
     // Initialize Everything
     // =========================================
     function init() {
@@ -545,6 +691,7 @@
         initKeyboardNav();
         initCursorEffect();
         initVideoPlayers();
+        loadDynamicContent();
     }
 
     // Run on DOM ready

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - King Bafété</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #f5f5f5; color: #333; }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed; left: 0; top: 0; width: 250px; height: 100vh;
+            background: #1a1a1a; color: #fff; padding: 1.5rem 0; overflow-y: auto; z-index: 100;
+        }
+        .sidebar h2 { text-align: center; color: #D4722C; margin-bottom: 2rem; padding: 0 1rem; font-size: 1.3rem; }
+        .sidebar a {
+            display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem;
+            color: #aaa; text-decoration: none; font-size: 0.9rem; transition: all 0.2s;
+        }
+        .sidebar a:hover, .sidebar a.active { color: #fff; background: rgba(212,114,44,0.2); border-right: 3px solid #D4722C; }
+        .sidebar .logout { margin-top: 2rem; color: #e74c3c; }
+
+        /* Main Content */
+        .main { margin-left: 250px; padding: 2rem; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .page-header h1 { font-size: 1.5rem; color: #1a1a1a; }
+
+        /* Stats Cards */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card {
+            background: #fff; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .stat-card .number { font-size: 2rem; font-weight: 700; color: #D4722C; }
+        .stat-card .label { font-size: 0.85rem; color: #666; }
+
+        /* Table */
+        .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 2rem; overflow: hidden; }
+        .card-header { padding: 1rem 1.5rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .card-header h3 { font-size: 1.1rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; }
+        th { font-weight: 600; color: #666; background: #fafafa; }
+        td img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
+
+        /* Buttons */
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; }
+        .btn-primary { background: #D4722C; color: #fff; }
+        .btn-primary:hover { background: #B85D1F; }
+        .btn-danger { background: #e74c3c; color: #fff; }
+        .btn-danger:hover { background: #c0392b; }
+        .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.8rem; }
+        .btn-outline { background: transparent; border: 1px solid #ddd; color: #666; }
+        .btn-outline:hover { border-color: #D4722C; color: #D4722C; }
+
+        /* Modal */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            z-index: 200; align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: #fff; border-radius: 16px; padding: 2rem; width: 90%; max-width: 600px;
+            max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .modal h3 { margin-bottom: 1.5rem; color: #1a1a1a; }
+        .modal .form-group { margin-bottom: 1rem; }
+        .modal label { display: block; margin-bottom: 0.4rem; font-weight: 500; font-size: 0.85rem; color: #555; }
+        .modal input, .modal textarea, .modal select {
+            width: 100%; padding: 0.6rem 0.8rem; border: 2px solid #e5e5e5; border-radius: 8px;
+            font-size: 0.9rem; font-family: inherit; transition: border-color 0.2s;
+        }
+        .modal input:focus, .modal textarea:focus { outline: none; border-color: #D4722C; }
+        .modal textarea { min-height: 100px; resize: vertical; }
+        .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; }
+
+        /* Image preview */
+        .img-preview { width: 100px; height: 80px; object-fit: cover; border-radius: 6px; margin-top: 0.5rem; }
+        .upload-zone {
+            border: 2px dashed #ddd; border-radius: 8px; padding: 1rem; text-align: center;
+            cursor: pointer; transition: border-color 0.2s; font-size: 0.85rem; color: #999;
+        }
+        .upload-zone:hover { border-color: #D4722C; }
+
+        /* Sections */
+        .section { display: none; }
+        .section.active { display: block; }
+
+        /* Badge */
+        .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .badge-green { background: #e8f5e9; color: #2e7d32; }
+        .badge-red { background: #fce4ec; color: #c62828; }
+        .badge-blue { background: #e3f2fd; color: #1565c0; }
+
+        /* Checkbox */
+        .toggle { display: flex; align-items: center; gap: 0.5rem; }
+        .toggle input[type=checkbox] { width: 18px; height: 18px; accent-color: #D4722C; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { width: 60px; }
+            .sidebar h2 { display: none; }
+            .sidebar a span { display: none; }
+            .main { margin-left: 60px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <h2>King Bafété</h2>
+        <a href="#" data-section="dashboard" class="active">&#128200; <span>Tableau de bord</span></a>
+        <a href="#" data-section="settings">&#9881; <span>Paramètres du site</span></a>
+        <a href="#" data-section="books">&#128214; <span>Livres</span></a>
+        <a href="#" data-section="interviews">&#127909; <span>Interviews</span></a>
+        <a href="#" data-section="blog">&#128221; <span>Blog</span></a>
+        <a href="#" data-section="contes">&#128218; <span>Contes</span></a>
+        <a href="#" data-section="gallery">&#128247; <span>Galerie</span></a>
+        <a href="#" data-section="contacts">&#128236; <span>Messages</span></a>
+        <a href="#" class="logout" onclick="logout()">&#128682; <span>Déconnexion</span></a>
+    </nav>
+
+    <div class="main">
+        <!-- Dashboard -->
+        <div class="section active" id="section-dashboard">
+            <div class="page-header"><h1>Tableau de bord</h1></div>
+            <div class="stats-grid" id="stats"></div>
+        </div>
+
+        <!-- Settings -->
+        <div class="section" id="section-settings">
+            <div class="page-header"><h1>Paramètres du site</h1></div>
+            <div class="card">
+                <form id="settingsForm" style="padding: 1.5rem;">
+                    <div class="form-group"><label>Nom du site</label><input name="siteName"></div>
+                    <div class="form-group"><label>Devise / Motto</label><input name="motto"></div>
+                    <div class="form-group"><label>Titre Hero</label><input name="heroTitle"></div>
+                    <div class="form-group"><label>Sous-titre Hero</label><input name="heroSubtitle"></div>
+                    <div class="form-group"><label>Année du badge</label><input name="badgeYear"></div>
+                    <div class="form-group"><label>Texte du badge</label><input name="badgeText"></div>
+                    <div class="form-group"><label>Introduction (À propos)</label><textarea name="aboutIntro" rows="3"></textarea></div>
+                    <div class="form-group"><label>Texte (À propos)</label><textarea name="aboutText" rows="5"></textarea></div>
+                    <div class="form-group"><label>Photo auteure (URL)</label><input name="aboutPhoto"><div class="upload-zone" onclick="uploadFor('aboutPhoto')">Cliquer pour uploader une image</div></div>
+                    <div class="form-group"><label>Logo (URL)</label><input name="logoUrl"><div class="upload-zone" onclick="uploadFor('logoUrl')">Cliquer pour uploader le logo</div></div>
+                    <div class="form-group"><label>Email de contact</label><input name="contactEmail" type="email"></div>
+                    <div class="form-group"><label>Adresse</label><input name="contactAddress"></div>
+                    <div class="form-group"><label>Description livres</label><textarea name="booksDescription" rows="2"></textarea></div>
+                    <div class="form-group"><label>URL Facebook</label><input name="facebookUrl"></div>
+                    <div class="form-group"><label>URL Instagram</label><input name="instagramUrl"></div>
+                    <div class="form-group"><label>URL YouTube</label><input name="youtubeUrl"></div>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Books -->
+        <div class="section" id="section-books">
+            <div class="page-header"><h1>Livres</h1><button class="btn btn-primary" onclick="openModal('book')">+ Ajouter</button></div>
+            <div class="card"><table><thead><tr><th>Image</th><th>Titre</th><th>Auteur</th><th>Prix</th><th>Vedette</th><th>Actions</th></tr></thead><tbody id="books-table"></tbody></table></div>
+        </div>
+
+        <!-- Interviews -->
+        <div class="section" id="section-interviews">
+            <div class="page-header"><h1>Interviews</h1><button class="btn btn-primary" onclick="openModal('interview')">+ Ajouter</button></div>
+            <div class="card"><table><thead><tr><th>Titre</th><th>YouTube</th><th>Date</th><th>Actions</th></tr></thead><tbody id="interviews-table"></tbody></table></div>
+        </div>
+
+        <!-- Blog -->
+        <div class="section" id="section-blog">
+            <div class="page-header"><h1>Articles de Blog</h1><button class="btn btn-primary" onclick="openModal('blogPost')">+ Ajouter</button></div>
+            <div class="card"><table><thead><tr><th>Titre</th><th>Catégorie</th><th>Publié</th><th>Date</th><th>Actions</th></tr></thead><tbody id="blog-table"></tbody></table></div>
+        </div>
+
+        <!-- Contes -->
+        <div class="section" id="section-contes">
+            <div class="page-header"><h1>Contes</h1><button class="btn btn-primary" onclick="openModal('conte')">+ Ajouter</button></div>
+            <div class="card"><table><thead><tr><th>Titre</th><th>Publié</th><th>Date</th><th>Actions</th></tr></thead><tbody id="contes-table"></tbody></table></div>
+        </div>
+
+        <!-- Gallery -->
+        <div class="section" id="section-gallery">
+            <div class="page-header"><h1>Galerie</h1><button class="btn btn-primary" onclick="openModal('galleryImage')">+ Ajouter</button></div>
+            <div class="card"><table><thead><tr><th>Image</th><th>Titre</th><th>Catégorie</th><th>Actions</th></tr></thead><tbody id="gallery-table"></tbody></table></div>
+        </div>
+
+        <!-- Contacts -->
+        <div class="section" id="section-contacts">
+            <div class="page-header"><h1>Messages reçus</h1></div>
+            <div class="card"><table><thead><tr><th>Nom</th><th>Email</th><th>Objet</th><th>Date</th><th>Lu</th><th>Actions</th></tr></thead><tbody id="contacts-table"></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <h3 id="modal-title">Ajouter</h3>
+            <form id="modal-form"></form>
+        </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="fileInput" accept="image/*" style="display:none">
+
+    <script>
+    // ==================== State ====================
+    let currentUploadTarget = null;
+
+    // ==================== Navigation ====================
+    document.querySelectorAll('.sidebar a[data-section]').forEach(a => {
+        a.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelectorAll('.sidebar a').forEach(x => x.classList.remove('active'));
+            a.classList.add('active');
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('section-' + a.dataset.section).classList.add('active');
+            loadSection(a.dataset.section);
+        });
+    });
+
+    // ==================== Load sections ====================
+    async function loadSection(name) {
+        if (name === 'dashboard') await loadDashboard();
+        else if (name === 'settings') await loadSettings();
+        else if (name === 'books') await loadTable('books', 'book');
+        else if (name === 'interviews') await loadTable('interviews', 'interview');
+        else if (name === 'blog') await loadTable('blog', 'blogPost');
+        else if (name === 'contes') await loadTable('contes', 'conte');
+        else if (name === 'gallery') await loadTable('gallery', 'galleryImage');
+        else if (name === 'contacts') await loadTable('contacts', 'contact');
+    }
+
+    // ==================== Dashboard ====================
+    async function loadDashboard() {
+        const res = await fetch('/admin/api/stats');
+        const s = await res.json();
+        document.getElementById('stats').innerHTML = `
+            <div class="stat-card"><div class="number">${s.books}</div><div class="label">Livres</div></div>
+            <div class="stat-card"><div class="number">${s.interviews}</div><div class="label">Interviews</div></div>
+            <div class="stat-card"><div class="number">${s.posts}</div><div class="label">Articles</div></div>
+            <div class="stat-card"><div class="number">${s.contes}</div><div class="label">Contes</div></div>
+            <div class="stat-card"><div class="number">${s.gallery}</div><div class="label">Photos</div></div>
+            <div class="stat-card"><div class="number">${s.unread}</div><div class="label">Messages non lus</div></div>
+        `;
+    }
+
+    // ==================== Settings ====================
+    async function loadSettings() {
+        const res = await fetch('/admin/api/settings');
+        const s = await res.json();
+        const form = document.getElementById('settingsForm');
+        Object.keys(s).forEach(k => {
+            if (form.elements[k]) form.elements[k].value = s[k] || '';
+        });
+    }
+
+    document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const data = Object.fromEntries(fd);
+        await fetch('/admin/api/settings', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+        alert('Paramètres enregistrés!');
+    });
+
+    // ==================== Tables ====================
+    const API_MAP = {
+        book: 'books', interview: 'interviews', blogPost: 'blog',
+        conte: 'contes', galleryImage: 'gallery', contact: 'contacts',
+    };
+
+    async function loadTable(section, model) {
+        const apiPath = API_MAP[model] || section;
+        const res = await fetch('/admin/api/' + apiPath);
+        const items = await res.json();
+        const tbody = document.getElementById(section + '-table');
+
+        if (section === 'books') {
+            tbody.innerHTML = items.map(b => `<tr>
+                <td>${b.coverImage ? `<img src="${b.coverImage}">` : '-'}</td>
+                <td>${b.title}</td><td>${b.author}</td><td>${b.price}</td>
+                <td>${b.featured ? '<span class="badge badge-green">Oui</span>' : 'Non'}</td>
+                <td><button class="btn btn-sm btn-outline" onclick="editItem('book',${b.id})">Modifier</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteItem('book',${b.id})">Supprimer</button></td>
+            </tr>`).join('');
+        } else if (section === 'interviews') {
+            tbody.innerHTML = items.map(i => `<tr>
+                <td>${i.title}</td><td><a href="${i.youtubeUrl}" target="_blank">Voir</a></td><td>${i.date}</td>
+                <td><button class="btn btn-sm btn-outline" onclick="editItem('interview',${i.id})">Modifier</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteItem('interview',${i.id})">Supprimer</button></td>
+            </tr>`).join('');
+        } else if (section === 'blog') {
+            tbody.innerHTML = items.map(p => `<tr>
+                <td>${p.title}</td><td>${p.category}</td>
+                <td>${p.published ? '<span class="badge badge-green">Oui</span>' : '<span class="badge badge-red">Non</span>'}</td>
+                <td>${new Date(p.createdAt).toLocaleDateString('fr-CA')}</td>
+                <td><button class="btn btn-sm btn-outline" onclick="editItem('blogPost',${p.id})">Modifier</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteItem('blogPost',${p.id})">Supprimer</button></td>
+            </tr>`).join('');
+        } else if (section === 'contes') {
+            tbody.innerHTML = items.map(c => `<tr>
+                <td>${c.title}</td>
+                <td>${c.published ? '<span class="badge badge-green">Oui</span>' : '<span class="badge badge-red">Non</span>'}</td>
+                <td>${new Date(c.createdAt).toLocaleDateString('fr-CA')}</td>
+                <td><button class="btn btn-sm btn-outline" onclick="editItem('conte',${c.id})">Modifier</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteItem('conte',${c.id})">Supprimer</button></td>
+            </tr>`).join('');
+        } else if (section === 'gallery') {
+            tbody.innerHTML = items.map(g => `<tr>
+                <td><img src="${g.imageUrl}"></td><td>${g.title}</td><td>${g.category}</td>
+                <td><button class="btn btn-sm btn-outline" onclick="editItem('galleryImage',${g.id})">Modifier</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteItem('galleryImage',${g.id})">Supprimer</button></td>
+            </tr>`).join('');
+        } else if (section === 'contacts') {
+            tbody.innerHTML = items.map(c => `<tr>
+                <td>${c.name}</td><td>${c.email}</td><td>${c.subject}</td>
+                <td>${new Date(c.createdAt).toLocaleDateString('fr-CA')}</td>
+                <td>${c.read ? '<span class="badge badge-green">Lu</span>' : '<span class="badge badge-blue">Nouveau</span>'}</td>
+                <td><button class="btn btn-sm btn-outline" onclick="viewContact(${c.id})">Voir</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteItem('contact',${c.id})">Supprimer</button></td>
+            </tr>`).join('');
+        }
+    }
+
+    // ==================== Modals ====================
+    const FIELDS = {
+        book: [
+            { name: 'title', label: 'Titre', required: true },
+            { name: 'author', label: 'Auteur', value: 'Fété Ngira-Batware Kimpiobi' },
+            { name: 'description', label: 'Description', type: 'textarea' },
+            { name: 'price', label: 'Prix' },
+            { name: 'coverImage', label: 'Image couverture', type: 'image' },
+            { name: 'amazonUrl', label: 'Lien Amazon' },
+            { name: 'publisher', label: 'Éditeur' },
+            { name: 'subtitle', label: 'Sous-titre' },
+            { name: 'badge', label: 'Badge (ex: Va bientôt paraître)' },
+            { name: 'featured', label: 'Mise en vedette', type: 'checkbox' },
+            { name: 'sortOrder', label: 'Ordre', type: 'number', value: '0' },
+        ],
+        interview: [
+            { name: 'title', label: 'Titre', required: true },
+            { name: 'youtubeUrl', label: 'URL YouTube', required: true },
+            { name: 'badge', label: 'Badge (ex: Capital TV)' },
+            { name: 'date', label: 'Année / Date' },
+            { name: 'sortOrder', label: 'Ordre', type: 'number', value: '0' },
+        ],
+        blogPost: [
+            { name: 'title', label: 'Titre', required: true },
+            { name: 'slug', label: 'Slug (URL)', required: true },
+            { name: 'excerpt', label: 'Extrait', type: 'textarea' },
+            { name: 'content', label: 'Contenu (HTML)', type: 'textarea' },
+            { name: 'category', label: 'Catégorie', value: 'Culture' },
+            { name: 'image', label: 'Image', type: 'image' },
+            { name: 'featured', label: 'Mise en vedette', type: 'checkbox' },
+            { name: 'published', label: 'Publié', type: 'checkbox', checked: true },
+        ],
+        conte: [
+            { name: 'title', label: 'Titre', required: true },
+            { name: 'slug', label: 'Slug (URL)', required: true },
+            { name: 'excerpt', label: 'Extrait', type: 'textarea' },
+            { name: 'content', label: 'Contenu (HTML)', type: 'textarea' },
+            { name: 'image', label: 'Image', type: 'image' },
+            { name: 'published', label: 'Publié', type: 'checkbox', checked: true },
+        ],
+        galleryImage: [
+            { name: 'title', label: 'Titre' },
+            { name: 'caption', label: 'Légende' },
+            { name: 'imageUrl', label: 'Image', type: 'image', required: true },
+            { name: 'category', label: 'Catégorie', value: 'general' },
+            { name: 'wide', label: 'Large (2 colonnes)', type: 'checkbox' },
+            { name: 'tall', label: 'Haute (2 lignes)', type: 'checkbox' },
+            { name: 'sortOrder', label: 'Ordre', type: 'number', value: '0' },
+        ],
+    };
+
+    function openModal(model, data = null) {
+        const modal = document.getElementById('modal');
+        document.getElementById('modal-title').textContent = data ? 'Modifier' : 'Ajouter';
+        const form = document.getElementById('modal-form');
+        const fields = FIELDS[model];
+        if (!fields) return;
+
+        form.innerHTML = fields.map(f => {
+            const val = data ? (data[f.name] || '') : (f.value || '');
+            if (f.type === 'textarea') {
+                return `<div class="form-group"><label>${f.label}</label><textarea name="${f.name}" ${f.required ? 'required' : ''} rows="4">${val}</textarea></div>`;
+            } else if (f.type === 'checkbox') {
+                const checked = data ? data[f.name] : (f.checked || false);
+                return `<div class="form-group"><label class="toggle"><input type="checkbox" name="${f.name}" ${checked ? 'checked' : ''}> ${f.label}</label></div>`;
+            } else if (f.type === 'image') {
+                return `<div class="form-group"><label>${f.label}</label><input name="${f.name}" value="${val}" ${f.required ? 'required' : ''}>
+                    ${val ? `<img src="${val}" class="img-preview">` : ''}
+                    <div class="upload-zone" onclick="uploadFor('${f.name}')">Cliquer pour uploader une image</div></div>`;
+            } else {
+                return `<div class="form-group"><label>${f.label}</label><input type="${f.type || 'text'}" name="${f.name}" value="${val}" ${f.required ? 'required' : ''}></div>`;
+            }
+        }).join('') + `
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" onclick="closeModal()">Annuler</button>
+                <button type="submit" class="btn btn-primary">${data ? 'Modifier' : 'Ajouter'}</button>
+            </div>`;
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const fd = new FormData(form);
+            const body = {};
+            fields.forEach(f => {
+                if (f.type === 'checkbox') {
+                    body[f.name] = form.elements[f.name].checked;
+                } else {
+                    body[f.name] = fd.get(f.name) || '';
+                }
+            });
+            if (body.sortOrder) body.sortOrder = parseInt(body.sortOrder);
+
+            const apiPath = API_MAP[model];
+            const url = data ? `/admin/api/${apiPath}/${data.id}` : `/admin/api/${apiPath}`;
+            const method = data ? 'PUT' : 'POST';
+            await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            closeModal();
+            loadSection(apiPath === 'blog' ? 'blog' : apiPath);
+        };
+
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('modal').classList.remove('active');
+    }
+
+    document.getElementById('modal').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeModal();
+    });
+
+    async function editItem(model, id) {
+        const apiPath = API_MAP[model];
+        const res = await fetch(`/admin/api/${apiPath}/${id}`);
+        const data = await res.json();
+        openModal(model, data);
+    }
+
+    async function deleteItem(model, id) {
+        if (!confirm('Supprimer cet élément?')) return;
+        const apiPath = API_MAP[model];
+        await fetch(`/admin/api/${apiPath}/${id}`, { method: 'DELETE' });
+        loadSection(apiPath === 'blog' ? 'blog' : apiPath);
+    }
+
+    async function viewContact(id) {
+        const res = await fetch(`/admin/api/contacts/${id}`);
+        const c = await res.json();
+        // Mark as read
+        await fetch(`/admin/api/contacts/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...c, read: true }),
+        });
+        alert(`De: ${c.name} (${c.email})\nObjet: ${c.subject}\n\n${c.message}`);
+        loadSection('contacts');
+    }
+
+    // ==================== File Upload ====================
+    function uploadFor(fieldName) {
+        currentUploadTarget = fieldName;
+        document.getElementById('fileInput').click();
+    }
+
+    document.getElementById('fileInput').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const fd = new FormData();
+        fd.append('file', file);
+        const res = await fetch('/admin/upload', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.url && currentUploadTarget) {
+            // Try settings form first, then modal form
+            let input = document.querySelector(`#settingsForm [name="${currentUploadTarget}"]`) ||
+                        document.querySelector(`#modal-form [name="${currentUploadTarget}"]`);
+            if (input) input.value = data.url;
+        }
+        e.target.value = '';
+    });
+
+    // ==================== Logout ====================
+    async function logout() {
+        await fetch('/admin/logout', { method: 'POST' });
+        window.location.href = '/admin/login';
+    }
+
+    // ==================== Init ====================
+    loadDashboard();
+    </script>
+</body>
+</html>

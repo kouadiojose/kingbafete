@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contes Africains | Kingbafete</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .page-hero {
+            background: linear-gradient(135deg, rgba(26,26,26,0.9), rgba(45,25,15,0.85));
+            padding: 8rem 0 4rem;
+            text-align: center;
+            color: #fff;
+        }
+        .page-hero h1 { font-size: 3rem; margin-bottom: 1rem; color: #fff; }
+        .page-hero p { color: rgba(255,255,255,0.7); max-width: 600px; margin: 0 auto; }
+        .contes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            padding: 4rem 0;
+        }
+        .conte-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        .conte-card:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(0,0,0,0.15); }
+        .conte-card__image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-gold));
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(255,255,255,0.3); font-size: 3rem;
+        }
+        .conte-card__image img { width: 100%; height: 100%; object-fit: cover; }
+        .conte-card__content { padding: 1.5rem; }
+        .conte-card__title { font-size: 1.2rem; margin-bottom: 0.75rem; line-height: 1.4; }
+        .conte-card__excerpt { color: #666; font-size: 0.9rem; margin-bottom: 1rem; }
+        .conte-card__link { color: var(--color-primary); font-weight: 500; }
+        .conte-card__link:hover { color: var(--color-primary-dark); }
+        .empty-state {
+            text-align: center; padding: 4rem 2rem; color: #999;
+        }
+        .empty-state p { font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+    <header class="header scrolled" id="header">
+        <nav class="nav container">
+            <a href="/" class="nav__logo"><span class="logo-text" style="color:var(--color-dark)">Kingbafete</span></a>
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item"><a href="/" class="nav__link">Accueil</a></li>
+                    <li class="nav__item"><a href="/#livres" class="nav__link">Livres</a></li>
+                    <li class="nav__item"><a href="/contes" class="nav__link active">Contes</a></li>
+                    <li class="nav__item"><a href="/#blog" class="nav__link">Blog</a></li>
+                    <li class="nav__item"><a href="/#contact" class="nav__link nav__link--cta">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="page-hero">
+        <div class="container">
+            <h1>Contes <span class="text-gradient">Africains</span></h1>
+            <p>Plongez dans la richesse des traditions orales du Congo et de l'Afrique. Chaque conte est un voyage au coeur de la sagesse ancestrale.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <div class="contes-grid" id="contes-grid">
+            <div class="empty-state" id="loading">
+                <p>Chargement des contes...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__bottom" style="padding:2rem 0;text-align:center;">
+                <p class="footer__copyright">&copy; 2026 Kingbafete. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        async function loadContes() {
+            const grid = document.getElementById('contes-grid');
+            try {
+                const res = await fetch('/api/contes');
+                const contes = await res.json();
+                if (contes.length === 0) {
+                    grid.innerHTML = '<div class="empty-state"><p>Les contes arrivent bientôt. Revenez nous voir!</p></div>';
+                    return;
+                }
+                grid.innerHTML = contes.map(c => `
+                    <article class="conte-card">
+                        <div class="conte-card__image">
+                            ${c.image ? `<img src="${c.image}" alt="${c.title}">` : '&#128218;'}
+                        </div>
+                        <div class="conte-card__content">
+                            <h2 class="conte-card__title">${c.title}</h2>
+                            <p class="conte-card__excerpt">${c.excerpt}</p>
+                            <a href="/contes/${c.slug}" class="conte-card__link">Lire le conte →</a>
+                        </div>
+                    </article>
+                `).join('');
+            } catch (e) {
+                grid.innerHTML = '<div class="empty-state"><p>Les contes arrivent bientôt. Revenez nous voir!</p></div>';
+            }
+        }
+        loadContes();
+    </script>
+</body>
+</html>

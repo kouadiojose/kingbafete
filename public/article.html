@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article | Kingbafete</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .article-header {
+            background: linear-gradient(135deg, rgba(26,26,26,0.9), rgba(45,25,15,0.85));
+            padding: 8rem 0 3rem; text-align: center; color: #fff;
+        }
+        .article-header h1 { font-size: 2.5rem; color: #fff; max-width: 800px; margin: 0 auto 1rem; }
+        .article-meta { color: rgba(255,255,255,0.6); font-size: 0.9rem; }
+        .article-content {
+            max-width: 800px; margin: 0 auto; padding: 3rem 1.5rem;
+            font-size: 1.1rem; line-height: 1.9; color: #444;
+        }
+        .article-content p { margin-bottom: 1.5rem; }
+        .article-content img { max-width: 100%; border-radius: 12px; margin: 2rem 0; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--color-primary); font-weight: 500; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <header class="header scrolled" id="header">
+        <nav class="nav container">
+            <a href="/" class="nav__logo"><span class="logo-text" style="color:var(--color-dark)">Kingbafete</span></a>
+            <div class="nav__menu">
+                <ul class="nav__list">
+                    <li class="nav__item"><a href="/" class="nav__link">Accueil</a></li>
+                    <li class="nav__item"><a href="/#blog" class="nav__link active">Blog</a></li>
+                    <li class="nav__item"><a href="/#contact" class="nav__link nav__link--cta">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="article-header">
+        <div class="container">
+            <h1 id="article-title">Chargement...</h1>
+            <p class="article-meta" id="article-meta"></p>
+        </div>
+    </section>
+
+    <main class="article-content">
+        <a href="/#blog" class="back-link">← Retour au blog</a>
+        <div id="article-body">Chargement...</div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__bottom" style="padding:2rem 0;text-align:center;">
+                <p class="footer__copyright">&copy; 2026 Kingbafete. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        async function loadArticle() {
+            const slug = window.location.pathname.split('/blog/')[1];
+            if (!slug) return;
+            try {
+                const res = await fetch('/api/blog/' + slug);
+                const post = await res.json();
+                document.getElementById('article-title').textContent = post.title;
+                document.getElementById('article-meta').textContent = `${post.category} — ${new Date(post.createdAt).toLocaleDateString('fr-CA', {day:'numeric',month:'long',year:'numeric'})}`;
+                document.getElementById('article-body').innerHTML = post.content;
+                document.title = post.title + ' | Kingbafete';
+            } catch (e) {
+                document.getElementById('article-body').innerHTML = '<p>Article non trouvé.</p>';
+            }
+        }
+        loadArticle();
+    </script>
+</body>
+</html>

@@ -1,11 +1,19 @@
-FROM nginx:alpine
+FROM node:20-alpine
 
-# Copy nginx config template
-COPY nginx.conf /etc/nginx/templates/default.conf.template
+WORKDIR /app
 
-# Copy static files
-COPY index.html /usr/share/nginx/html/
-COPY styles.css /usr/share/nginx/html/
-COPY script.js /usr/share/nginx/html/
+# Install dependencies
+COPY package.json ./
+RUN npm install --production
 
-EXPOSE $PORT
+# Copy prisma schema and generate client
+COPY prisma ./prisma/
+RUN npx prisma generate
+
+# Copy application code
+COPY server ./server/
+COPY public ./public/
+
+EXPOSE ${PORT:-3000}
+
+CMD ["node", "server/index.js"]
