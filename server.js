@@ -184,17 +184,13 @@ if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-server.listen(PORT, function () {
+var HOST = '0.0.0.0';
+server.listen(PORT, HOST, function () {
     console.log('');
-    console.log('  ╔══════════════════════════════════════════╗');
-    console.log('  ║        King Bafété - Serveur Web         ║');
-    console.log('  ╠══════════════════════════════════════════╣');
-    console.log('  ║                                          ║');
-    console.log('  ║  Site  : http://localhost:' + PORT + '            ║');
-    console.log('  ║  Admin : http://localhost:' + PORT + '/admin.html ║');
-    console.log('  ║                                          ║');
-    console.log('  ║  API   : /api/data/{gallery|books|...}   ║');
-    console.log('  ║                                          ║');
-    console.log('  ╚══════════════════════════════════════════╝');
+    console.log('  King Bafété - Serveur Web');
+    console.log('  Port: ' + PORT);
+    console.log('  Site:  http://localhost:' + PORT);
+    console.log('  Admin: http://localhost:' + PORT + '/admin.html');
+    console.log('  API:   /api/data/{gallery|books|blog|about|settings}');
     console.log('');
 });
