@@ -66,20 +66,27 @@
     <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const form = new FormData(e.target);
-            const data = { email: form.get('email'), password: form.get('password') };
-            const res = await fetch('/admin/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            });
-            const json = await res.json();
-            if (json.success) {
-                window.location.href = '/admin';
-            } else {
-                const err = document.getElementById('error');
-                err.textContent = json.error;
-                err.style.display = 'block';
+            const errEl = document.getElementById('error');
+            errEl.style.display = 'none';
+            try {
+                const form = new FormData(e.target);
+                const data = { email: form.get('email'), password: form.get('password') };
+                const res = await fetch('/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify(data),
+                });
+                const json = await res.json();
+                if (json.success) {
+                    window.location.href = '/admin';
+                } else {
+                    errEl.textContent = json.error || 'Erreur de connexion';
+                    errEl.style.display = 'block';
+                }
+            } catch (err) {
+                errEl.textContent = 'Erreur réseau: ' + err.message;
+                errEl.style.display = 'block';
             }
         });
     </script>
