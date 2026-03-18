@@ -549,6 +549,98 @@
         return match ? 'https://www.youtube.com/embed/' + match[1] : url;
     }
 
+    async function loadSettings() {
+        try {
+            const settings = await fetch('/api/settings').then(r => r.json());
+
+            // Hero section
+            const heroTitle = document.getElementById('hero-title');
+            if (heroTitle && settings.heroTitle) {
+                heroTitle.innerHTML = settings.heroTitle.replace(/\n/g, '<br>');
+            }
+            const heroSubtitle = document.getElementById('hero-subtitle');
+            if (heroSubtitle && settings.heroSubtitle) {
+                heroSubtitle.textContent = settings.heroSubtitle;
+            }
+            const heroMotto = document.getElementById('hero-motto');
+            if (heroMotto && settings.motto) {
+                heroMotto.textContent = `"${settings.motto}"`;
+            }
+
+            // Logo / Site name
+            const siteLogo = document.getElementById('site-logo');
+            if (siteLogo && settings.siteName) {
+                siteLogo.textContent = settings.siteName;
+            }
+
+            // About section
+            const aboutPhoto = document.getElementById('about-photo');
+            if (aboutPhoto && settings.aboutPhoto) {
+                aboutPhoto.src = settings.aboutPhoto;
+            }
+            const aboutIntro = document.getElementById('about-intro');
+            if (aboutIntro && settings.aboutIntro) {
+                aboutIntro.innerHTML = `<p class="intro__highlight">${settings.aboutIntro}</p>`;
+            }
+            const aboutText = document.getElementById('about-text');
+            if (aboutText && settings.aboutText) {
+                aboutText.innerHTML = settings.aboutText.split('\n\n').map(p => `<p>${p}</p>`).join('');
+            }
+
+            // Badge
+            const badgeYear = document.getElementById('badge-year');
+            if (badgeYear && settings.badgeYear) {
+                badgeYear.textContent = settings.badgeYear;
+            }
+            const badgeText = document.getElementById('badge-text');
+            if (badgeText && settings.badgeText) {
+                badgeText.textContent = settings.badgeText;
+            }
+
+            // Books description
+            const booksDesc = document.getElementById('books-description');
+            if (booksDesc && settings.booksDescription) {
+                booksDesc.textContent = settings.booksDescription;
+            }
+
+            // Contact info
+            const contactEmail = document.getElementById('contact-email');
+            if (contactEmail && settings.contactEmail) {
+                contactEmail.textContent = settings.contactEmail;
+            }
+            const contactAddress = document.getElementById('contact-address');
+            if (contactAddress && settings.contactAddress) {
+                contactAddress.textContent = settings.contactAddress;
+            }
+
+            // Social links
+            const fbLink = document.getElementById('social-facebook');
+            if (fbLink && settings.facebookUrl) {
+                fbLink.href = settings.facebookUrl;
+                fbLink.target = '_blank';
+            }
+            const igLink = document.getElementById('social-instagram');
+            if (igLink && settings.instagramUrl) {
+                igLink.href = settings.instagramUrl;
+                igLink.target = '_blank';
+            }
+            const ytLink = document.getElementById('social-youtube');
+            if (ytLink && settings.youtubeUrl) {
+                ytLink.href = settings.youtubeUrl;
+                ytLink.target = '_blank';
+            }
+
+            // Footer motto
+            const footerMotto = document.getElementById('footer-motto');
+            if (footerMotto && settings.motto) {
+                footerMotto.textContent = `"${settings.motto}"`;
+            }
+
+        } catch (err) {
+            console.log('Settings API not available, using defaults');
+        }
+    }
+
     async function loadDynamicContent() {
         try {
             const [books, interviews, blogPosts, gallery] = await Promise.all([
@@ -691,6 +783,7 @@
         initKeyboardNav();
         initCursorEffect();
         initVideoPlayers();
+        loadSettings();
         loadDynamicContent();
     }
 
