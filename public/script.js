@@ -240,7 +240,8 @@
             });
         }, observerOptions);
 
-        elements.aosElements.forEach(el => observer.observe(el));
+        // Re-query DOM to include dynamically added elements
+        document.querySelectorAll('[data-aos]:not(.aos-animate)').forEach(el => observer.observe(el));
     }
 
     // =========================================
