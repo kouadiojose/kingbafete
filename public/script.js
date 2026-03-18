@@ -650,6 +650,17 @@
                 footerMotto.textContent = `"${settings.motto}"`;
             }
 
+            // Footer copyright site name
+            const footerSiteName = document.getElementById('footer-site-name');
+            if (footerSiteName && settings.siteName) {
+                footerSiteName.textContent = settings.siteName;
+            }
+
+            // Page title
+            if (settings.siteName) {
+                document.title = settings.siteName + ' | Contes Africains';
+            }
+
         } catch (err) {
             console.log('Settings API not available, using defaults');
         }
