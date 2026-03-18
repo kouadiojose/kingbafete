@@ -572,8 +572,22 @@
             if (siteLogo && settings.siteName) {
                 siteLogo.textContent = settings.siteName;
             }
+            const siteLogoImg = document.getElementById('site-logo-img');
+            if (siteLogoImg && settings.logoUrl) {
+                siteLogoImg.src = settings.logoUrl;
+                siteLogoImg.alt = settings.siteName || 'Logo';
+                siteLogoImg.style.display = 'inline-block';
+            }
+            const footerLogo = document.getElementById('footer-logo');
+            if (footerLogo && settings.siteName) {
+                footerLogo.textContent = settings.siteName;
+            }
 
             // About section
+            const aboutTitle = document.getElementById('about-title');
+            if (aboutTitle && settings.aboutTitle) {
+                aboutTitle.textContent = settings.aboutTitle;
+            }
             const aboutPhoto = document.getElementById('about-photo');
             if (aboutPhoto && settings.aboutPhoto) {
                 aboutPhoto.src = settings.aboutPhoto;

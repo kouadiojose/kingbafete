@@ -27,7 +27,10 @@
 <body>
     <header class="header scrolled" id="header">
         <nav class="nav container">
-            <a href="/" class="nav__logo"><span class="logo-text" style="color:var(--color-dark)">Kingbafete</span></a>
+            <a href="/" class="nav__logo">
+                <img src="" alt="" class="logo-img" id="site-logo-img" style="display:none;height:40px;margin-right:8px;">
+                <span class="logo-text" id="site-logo" style="color:var(--color-dark)">Kingbafete</span>
+            </a>
             <div class="nav__menu">
                 <ul class="nav__list">
                     <li class="nav__item"><a href="/" class="nav__link">Accueil</a></li>
@@ -46,19 +49,45 @@
     </section>
 
     <main class="article-content">
-        <a href="/#blog" class="back-link">← Retour au blog</a>
+        <a href="/#blog" class="back-link">&larr; Retour au blog</a>
         <div id="article-body">Chargement...</div>
     </main>
 
     <footer class="footer">
         <div class="container">
+            <div class="footer__top">
+                <div class="footer__brand">
+                    <a href="/" class="footer__logo" id="footer-logo">Kingbafete</a>
+                    <p class="footer__tagline" id="footer-motto">"Là où tu es semé, il te fleurira"</p>
+                </div>
+            </div>
             <div class="footer__bottom" style="padding:2rem 0;text-align:center;">
-                <p class="footer__copyright">&copy; 2026 Kingbafete. Tous droits réservés.</p>
+                <p class="footer__copyright">&copy; 2026 <span id="footer-site-name">Kingbafete</span>. Tous droits réservés.</p>
             </div>
         </div>
     </footer>
 
     <script>
+        async function loadSettings() {
+            try {
+                const settings = await fetch('/api/settings').then(r => r.json());
+                const logo = document.getElementById('site-logo');
+                if (logo && settings.siteName) logo.textContent = settings.siteName;
+                const logoImg = document.getElementById('site-logo-img');
+                if (logoImg && settings.logoUrl) {
+                    logoImg.src = settings.logoUrl;
+                    logoImg.alt = settings.siteName || 'Logo';
+                    logoImg.style.display = 'inline-block';
+                }
+                const footerLogo = document.getElementById('footer-logo');
+                if (footerLogo && settings.siteName) footerLogo.textContent = settings.siteName;
+                const footerMotto = document.getElementById('footer-motto');
+                if (footerMotto && settings.motto) footerMotto.textContent = '"' + settings.motto + '"';
+                const footerName = document.getElementById('footer-site-name');
+                if (footerName && settings.siteName) footerName.textContent = settings.siteName;
+            } catch (e) {}
+        }
+
         async function loadArticle() {
             const slug = window.location.pathname.split('/blog/')[1];
             if (!slug) return;
@@ -66,13 +95,15 @@
                 const res = await fetch('/api/blog/' + slug);
                 const post = await res.json();
                 document.getElementById('article-title').textContent = post.title;
-                document.getElementById('article-meta').textContent = `${post.category} — ${new Date(post.createdAt).toLocaleDateString('fr-CA', {day:'numeric',month:'long',year:'numeric'})}`;
+                document.getElementById('article-meta').textContent = post.category + ' \u2014 ' + new Date(post.createdAt).toLocaleDateString('fr-CA', {day:'numeric',month:'long',year:'numeric'});
                 document.getElementById('article-body').innerHTML = post.content;
                 document.title = post.title + ' | Kingbafete';
             } catch (e) {
                 document.getElementById('article-body').innerHTML = '<p>Article non trouvé.</p>';
             }
         }
+
+        loadSettings();
         loadArticle();
     </script>
 </body>
